@@ -31,8 +31,7 @@ void MainWindow::on_actionOpenFolder_triggered()
         foreach (const QFileInfo &fileInfo, infoList) {
             QString itemName = fileInfo.fileName();
             QString absPath = fileInfo.absoluteFilePath();
-            ui->showFolder->addItem(new QListWidgetItem(QIcon(absPath), itemName));
-
+            ui->showFolder->addItem(new QListWidgetItem(QIcon(), itemName));
         }
 
     }
