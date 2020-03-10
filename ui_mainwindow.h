@@ -31,7 +31,7 @@ public:
     QAction *actionDraw;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
-    QListWidget *listWidget;
+    QListWidget *showFolder;
     QVBoxLayout *verticalLayout;
     QGraphicsView *Image;
     QGraphicsView *Mask;
@@ -42,7 +42,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(910, 837);
+        MainWindow->resize(1297, 961);
         MainWindow->setLocale(QLocale(QLocale::Vietnamese, QLocale::Vietnam));
         actionOpenFolder = new QAction(MainWindow);
         actionOpenFolder->setObjectName(QString::fromUtf8("actionOpenFolder"));
@@ -54,25 +54,40 @@ public:
         horizontalLayout->setSpacing(4);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(4, 4, 4, 4);
-        listWidget = new QListWidget(centralwidget);
-        listWidget->setObjectName(QString::fromUtf8("listWidget"));
+        showFolder = new QListWidget(centralwidget);
+        showFolder->setObjectName(QString::fromUtf8("showFolder"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(listWidget->sizePolicy().hasHeightForWidth());
-        listWidget->setSizePolicy(sizePolicy);
+        sizePolicy.setHeightForWidth(showFolder->sizePolicy().hasHeightForWidth());
+        showFolder->setSizePolicy(sizePolicy);
+        showFolder->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        showFolder->setIconSize(QSize(250, 70));
+        showFolder->setMovement(QListView::Static);
+        showFolder->setFlow(QListView::TopToBottom);
+        showFolder->setProperty("isWrapping", QVariant(false));
+        showFolder->setResizeMode(QListView::Adjust);
+        showFolder->setGridSize(QSize(260, 95));
+        showFolder->setViewMode(QListView::IconMode);
 
-        horizontalLayout->addWidget(listWidget);
+        horizontalLayout->addWidget(showFolder);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         Image = new QGraphicsView(centralwidget);
         Image->setObjectName(QString::fromUtf8("Image"));
+        QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(Image->sizePolicy().hasHeightForWidth());
+        Image->setSizePolicy(sizePolicy1);
 
         verticalLayout->addWidget(Image);
 
         Mask = new QGraphicsView(centralwidget);
         Mask->setObjectName(QString::fromUtf8("Mask"));
+        sizePolicy1.setHeightForWidth(Mask->sizePolicy().hasHeightForWidth());
+        Mask->setSizePolicy(sizePolicy1);
 
         verticalLayout->addWidget(Mask);
 

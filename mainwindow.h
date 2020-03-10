@@ -5,6 +5,10 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QSettings>
+#include <QListWidgetItem>
+#include <QImageReader>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -22,7 +26,12 @@ private slots:
 
 
 
+    void on_showFolder_itemClicked(QListWidgetItem *item);
+
 private:
+    QGraphicsScene *scene = new QGraphicsScene;
+    //QImageReader *reader = nullptr;
+    QString chosenDir;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

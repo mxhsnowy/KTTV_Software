@@ -19,10 +19,11 @@ void MainWindow::on_actionOpenFolder_triggered()
 {
     QString defaultDir = QDir::homePath();
     QSettings lastDir;
-    QString loadedDir = QFileDialog::getExistingDirectory(this, tr("Chọn thư mục"),
+    chosenDir = QFileDialog::getExistingDirectory(this, tr("Chọn thư mục"),
                                                           lastDir.value(defaultDir).toString());
-    if(!loadedDir.isEmpty()){
-        QDir loadDir(loadedDir);
+    if(!chosenDir.isEmpty()){
+        QIcon icon;
+        QDir loadDir(chosenDir);
         lastDir.setValue(defaultDir, loadDir.path());
         QStringList filter;
         filter<<"*.jpg"<<"*.JPG";
@@ -30,12 +31,13 @@ void MainWindow::on_actionOpenFolder_triggered()
         QList<QFileInfo> infoList = loadDir.entryInfoList();
 
         foreach (const QFileInfo &fileInfo, infoList) {
+
             QString itemName = fileInfo.fileName();
             QString absPath = fileInfo.absoluteFilePath();
-            ui->showFolder->addItem(new QListWidgetItem("abc"));
-
-
-            //ui->showFolder->addItem(new QListWidgetItem(QIcon(), itemName));
+            QImageReader reader(absPath);
+            reader.setScaledSize(QSize(250, 70));
+            icon = QIcon(QPixmap::fromImage(reader.read()));
+            ui->showFolder->addItem(new QListWidgetItem(icon, itemName));
         }
 
     }
@@ -43,3 +45,16 @@ void MainWindow::on_actionOpenFolder_triggered()
 }
 
 
+
+void MainWindow::on_showFolder_itemClicked(QListWidgetItem *item)
+{
+    QPixmap image;
+    if(image.load(chosenDir + "\\" + item->text())){
+        scene->clear();
+        QGraphicsPixmapItem *it = new QGraphicsPixmapItem(image);
+        scene->addItem(it);
+        ui->Image->setScene(scene);
+        ui->Image->fitInView(it, Qt::KeepAspectRatio);
+    }
+
+}
