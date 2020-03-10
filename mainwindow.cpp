@@ -34,6 +34,7 @@ void MainWindow::on_actionOpenFolder_triggered()
             QString absPath = fileInfo.absoluteFilePath();
             ui->showFolder->addItem(new QListWidgetItem("abc"));
 
+
             //ui->showFolder->addItem(new QListWidgetItem(QIcon(), itemName));
         }
 
