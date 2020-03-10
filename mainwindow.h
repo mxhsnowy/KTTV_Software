@@ -20,6 +20,8 @@ public:
 private slots:
     void on_actionOpenFolder_triggered();
 
+
+
 private:
     Ui::MainWindow *ui;
 };

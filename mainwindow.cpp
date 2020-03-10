@@ -28,12 +28,17 @@ void MainWindow::on_actionOpenFolder_triggered()
         filter<<"*.jpg"<<"*.JPG";
         loadDir.setNameFilters(filter);
         QList<QFileInfo> infoList = loadDir.entryInfoList();
+
         foreach (const QFileInfo &fileInfo, infoList) {
             QString itemName = fileInfo.fileName();
             QString absPath = fileInfo.absoluteFilePath();
-            ui->showFolder->addItem(new QListWidgetItem(QIcon(), itemName));
+            ui->showFolder->addItem(new QListWidgetItem("abc"));
+
+            //ui->showFolder->addItem(new QListWidgetItem(QIcon(), itemName));
         }
 
     }
 
 }
+
+
