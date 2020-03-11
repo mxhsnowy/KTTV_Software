@@ -17,11 +17,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     callout.cpp \
+    linechart.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     callout.h \
+    linechart.h \
     mainwindow.h
 
 FORMS += \
