@@ -13,14 +13,13 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <linechart.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -33,9 +32,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QListWidget *showFolder;
     QVBoxLayout *verticalLayout;
-    QGraphicsView *Image;
-    QGraphicsView *Mask;
-    QStatusBar *statusbar;
+    LineChart *Mask;
     QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -74,18 +71,11 @@ public:
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        Image = new QGraphicsView(centralwidget);
-        Image->setObjectName(QString::fromUtf8("Image"));
+        Mask = new LineChart(centralwidget);
+        Mask->setObjectName(QString::fromUtf8("Mask"));
         QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(Image->sizePolicy().hasHeightForWidth());
-        Image->setSizePolicy(sizePolicy1);
-
-        verticalLayout->addWidget(Image);
-
-        Mask = new QGraphicsView(centralwidget);
-        Mask->setObjectName(QString::fromUtf8("Mask"));
         sizePolicy1.setHeightForWidth(Mask->sizePolicy().hasHeightForWidth());
         Mask->setSizePolicy(sizePolicy1);
 
@@ -95,9 +85,6 @@ public:
         horizontalLayout->addLayout(verticalLayout);
 
         MainWindow->setCentralWidget(centralwidget);
-        statusbar = new QStatusBar(MainWindow);
-        statusbar->setObjectName(QString::fromUtf8("statusbar"));
-        MainWindow->setStatusBar(statusbar);
         toolBar = new QToolBar(MainWindow);
         toolBar->setObjectName(QString::fromUtf8("toolBar"));
         MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
