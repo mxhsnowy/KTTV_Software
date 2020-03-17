@@ -19,12 +19,16 @@ SOURCES += \
     callout.cpp \
     linechart.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    mygraphicsitem.cpp \
+    mygraphicsview.cpp
 
 HEADERS += \
     callout.h \
     linechart.h \
-    mainwindow.h
+    mainwindow.h \
+    mygraphicsitem.h \
+    mygraphicsview.h
 
 FORMS += \
     mainwindow.ui

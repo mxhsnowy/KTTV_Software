@@ -76,7 +76,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="LineChart" name="Mask">
+       <widget class="MyGraphicsView" name="Mask">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -101,7 +101,7 @@
    </attribute>
    <addaction name="actionOpenFolder"/>
    <addaction name="separator"/>
-   <addaction name="actionDraw"/>
+   <addaction name="actionZoom"/>
   </widget>
   <action name="actionOpenFolder">
    <property name="text">
@@ -111,20 +111,23 @@
     <string>Mở Thư Mục</string>
    </property>
   </action>
-  <action name="actionDraw">
+  <action name="actionZoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Vẽ đường bám</string>
+    <string>Thu phóng</string>
    </property>
    <property name="toolTip">
-    <string>Vẽ đường bám đồ thị màu xanh</string>
+    <string>Phóng to, thu nhỏ bằng con lăn chuột</string>
    </property>
   </action>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LineChart</class>
+   <class>MyGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header location="global">linechart.h</header>
+   <header location="global">mygraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

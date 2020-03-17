@@ -5,10 +5,34 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-
     ui->setupUi(this);
-}
+    ui->Mask->setMouseTracking(true);
 
+    ui->toolBar->addWidget(name);
+    //ui->Mask->scene()->installEventFilter(this);
+}
+bool MainWindow::eventFilter(QObject *object, QEvent *event){
+    if (event->type() ==  QEvent::GraphicsSceneMouseMove ) {
+       QGraphicsSceneMouseEvent *mouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
+
+       QPointF img_coord_pt = mouseEvent->scenePos();
+
+       double x = img_coord_pt.x();
+       double y = img_coord_pt.y();
+
+       QColor color = QColor(image.toImage().pixel(x,y));
+       int average = (color.red()+color.green()+color.blue())/3;
+       ui->Mask->toolTip();
+       ui->Mask->setToolTip(QString("%1, %2, %3").arg(QString::number(x), QString::number(y), QString::number(average)));
+       //ui->label_X->setText(QString::number(x));
+       //ui->label_Y->setText(QString::number(y));
+       name->setText(QString::number(average));
+
+       return true;
+     } else {
+       return QObject::eventFilter(object, event);
+     }
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -48,13 +72,21 @@ void MainWindow::on_actionOpenFolder_triggered()
 
 void MainWindow::on_showFolder_itemClicked(QListWidgetItem *item)
 {
-    QPixmap image;
+
     if(image.load(chosenDir + "\\" + item->text())){
         scene->clear();
+        scene->installEventFilter(this);
         QGraphicsPixmapItem *it = new QGraphicsPixmapItem(image);
         scene->addItem(it);
-        ui->Image->setScene(scene);
-        ui->Image->fitInView(it, Qt::KeepAspectRatio);
+        ui->Mask->setScene(scene);
+        ui->Mask->fitInView(it, Qt::KeepAspectRatioByExpanding);
     }
 
+}
+
+
+
+void MainWindow::on_actionZoom_toggled(bool enabled)
+{
+    ui->Mask->zoomEnabled = enabled;
 }

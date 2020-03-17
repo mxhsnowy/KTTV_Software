@@ -19,7 +19,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <linechart.h>
+#include <mygraphicsview.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -27,12 +27,12 @@ class Ui_MainWindow
 {
 public:
     QAction *actionOpenFolder;
-    QAction *actionDraw;
+    QAction *actionZoom;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QListWidget *showFolder;
     QVBoxLayout *verticalLayout;
-    LineChart *Mask;
+    MyGraphicsView *Mask;
     QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -43,8 +43,9 @@ public:
         MainWindow->setLocale(QLocale(QLocale::Vietnamese, QLocale::Vietnam));
         actionOpenFolder = new QAction(MainWindow);
         actionOpenFolder->setObjectName(QString::fromUtf8("actionOpenFolder"));
-        actionDraw = new QAction(MainWindow);
-        actionDraw->setObjectName(QString::fromUtf8("actionDraw"));
+        actionZoom = new QAction(MainWindow);
+        actionZoom->setObjectName(QString::fromUtf8("actionZoom"));
+        actionZoom->setCheckable(true);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -71,7 +72,7 @@ public:
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        Mask = new LineChart(centralwidget);
+        Mask = new MyGraphicsView(centralwidget);
         Mask->setObjectName(QString::fromUtf8("Mask"));
         QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -91,7 +92,7 @@ public:
 
         toolBar->addAction(actionOpenFolder);
         toolBar->addSeparator();
-        toolBar->addAction(actionDraw);
+        toolBar->addAction(actionZoom);
 
         retranslateUi(MainWindow);
 
@@ -105,9 +106,9 @@ public:
 #if QT_CONFIG(tooltip)
         actionOpenFolder->setToolTip(QCoreApplication::translate("MainWindow", "M\341\273\237 Th\306\260 M\341\273\245c", nullptr));
 #endif // QT_CONFIG(tooltip)
-        actionDraw->setText(QCoreApplication::translate("MainWindow", "V\341\272\275 \304\221\306\260\341\273\235ng b\303\241m", nullptr));
+        actionZoom->setText(QCoreApplication::translate("MainWindow", "Thu ph\303\263ng", nullptr));
 #if QT_CONFIG(tooltip)
-        actionDraw->setToolTip(QCoreApplication::translate("MainWindow", "V\341\272\275 \304\221\306\260\341\273\235ng b\303\241m \304\221\341\273\223 th\341\273\213 m\303\240u xanh", nullptr));
+        actionZoom->setToolTip(QCoreApplication::translate("MainWindow", "Ph\303\263ng to, thu nh\341\273\217 b\341\272\261ng con l\304\203n chu\341\273\231t", nullptr));
 #endif // QT_CONFIG(tooltip)
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi

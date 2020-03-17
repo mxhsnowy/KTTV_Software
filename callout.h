@@ -17,7 +17,9 @@ class QChart;
 QT_CHARTS_END_NAMESPACE
 
 QT_CHARTS_USE_NAMESPACE
-
+/* Class for constructing GraphicsItem which represent
+ * the line charts inside GraphicsView
+ */
 class Callout : public QGraphicsItem
 {
 public:

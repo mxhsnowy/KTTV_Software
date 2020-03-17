@@ -4,6 +4,7 @@
 
 #include <QGraphicsView>
 #include <QChart>
+#include <QLineSeries>
 QT_BEGIN_NAMESPACE
 class QGraphicsScene;
 class QMouseEvent;
@@ -24,6 +25,8 @@ class LineChart: public QGraphicsView
 
 public:
     LineChart(QWidget *parent = 0);
+    QLineSeries* getLine(const QString &path);
+    void callChart();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -34,8 +37,11 @@ public slots:
     void tooltip(QPointF point, bool state);
 
 private:
-    QGraphicsSimpleTextItem *m_coordX;
-    QGraphicsSimpleTextItem *m_coordY;
+
+    //int height;
+    //int width;
+    QGraphicsSimpleTextItem *m_coordX = nullptr;
+    QGraphicsSimpleTextItem *m_coordY = nullptr;
     QChart *m_chart;
     Callout *m_tooltip;
     QList<Callout *> m_callouts;

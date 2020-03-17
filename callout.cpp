@@ -8,7 +8,9 @@ Callout::Callout(QChart *chart):
 
 QRectF Callout::boundingRect() const
 {
+
     QPointF anchor = mapFromParent(m_chart->mapToPosition(m_anchor));
+
     QRectF rect;
     rect.setLeft(qMin(m_rect.left(), anchor.x()));
     rect.setRight(qMax(m_rect.right(), anchor.x()));
@@ -46,12 +48,12 @@ void Callout::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         bool vertical = qAbs(anchor.x() - x) > qAbs(anchor.y() - y);
 
         qreal x1 = x + leftOfCenter * 10 - rightOfCenter * 20 + cornerCase * !vertical * (onLeft * 10 - onRight * 20);
-        qreal y1 = y + aboveCenter * 10 - belowCenter * 20 + cornerCase * vertical * (above * 10 - below * 20);;
+        qreal y1 = y + aboveCenter * 10 - belowCenter * 20 + cornerCase * vertical * (above * 10 - below * 20);
         point1.setX(x1);
         point1.setY(y1);
 
-        qreal x2 = x + leftOfCenter * 20 - rightOfCenter * 10 + cornerCase * !vertical * (onLeft * 20 - onRight * 10);;
-        qreal y2 = y + aboveCenter * 20 - belowCenter * 10 + cornerCase * vertical * (above * 20 - below * 10);;
+        qreal x2 = x + leftOfCenter * 20 - rightOfCenter * 10 + cornerCase * !vertical * (onLeft * 20 - onRight * 10);
+        qreal y2 = y + aboveCenter * 20 - belowCenter * 10 + cornerCase * vertical * (above * 20 - below * 10);
         point2.setX(x2);
         point2.setY(y2);
 
