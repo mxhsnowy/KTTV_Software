@@ -18,47 +18,25 @@ LineChart::LineChart(QWidget *parent)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_chart = new QChart;
-    m_chart->setMinimumSize(640, 480);
-    //m_chart->setTitle("Di chuyển để xem vị trí, chuột trái để giữ.");
+    m_chart->setPreferredWidth(2304);
+    m_chart->setPreferredHeight(3200);
+    m_chart->setTitle("Di chuyển để xem vị trí, chuột trái để giữ.");
     m_chart->legend()->hide();
 
-//    QLineSeries *series = getLine("F:\\Weathering with you\\kttv-phase1\\kttv_am\\2.thinned\\am_0_0.jpg");
-//    m_chart->addSeries(series);
-//    m_chart->createDefaultAxes();
-//    m_chart->setAcceptHoverEvents(true);
-
-
-//    setRenderHint(QPainter::Antialiasing);
-    scene()->addItem(m_chart);
-
-    m_coordX = new QGraphicsSimpleTextItem(m_chart);
-//    m_coordX->setPos(m_chart->size().width()/2 - 50, m_chart->size().height());
-//    m_coordX->setText("X: ");
-
-    m_coordY = new QGraphicsSimpleTextItem(m_chart);
-//    m_coordY->setPos(m_chart->size().width()/2 + 50, m_chart->size().height());
-//    m_coordY->setText("Y: ");
-
-//    connect(series, &QLineSeries::clicked, this, &LineChart::keepCallout);
-//    connect(series, &QLineSeries::hovered, this, &LineChart::tooltip);
-
-     this->setMouseTracking(true);
-}
-void LineChart::callChart(){
-    //m_chart->setMinimumSize(640, 480);
     QLineSeries *series = getLine("F:\\Weathering with you\\kttv-phase1\\kttv_am\\2.thinned\\am_0_0.jpg");
     m_chart->addSeries(series);
     m_chart->createDefaultAxes();
     m_chart->setAcceptHoverEvents(true);
 
+
     setRenderHint(QPainter::Antialiasing);
     scene()->addItem(m_chart);
 
-    //m_coordX = new QGraphicsSimpleTextItem(m_chart);
+    m_coordX = new QGraphicsSimpleTextItem(m_chart);
     m_coordX->setPos(m_chart->size().width()/2 - 50, m_chart->size().height());
     m_coordX->setText("X: ");
 
-    //m_coordY = new QGraphicsSimpleTextItem(m_chart);
+    m_coordY = new QGraphicsSimpleTextItem(m_chart);
     m_coordY->setPos(m_chart->size().width()/2 + 50, m_chart->size().height());
     m_coordY->setText("Y: ");
 
@@ -67,11 +45,32 @@ void LineChart::callChart(){
 
     this->setMouseTracking(true);
 }
+void LineChart::callChart(){
+//    m_chart->setMinimumSize(640, 480);
+//    QLineSeries *series = getLine("F:\\Weathering with you\\kttv-phase1\\kttv_am\\2.thinned\\am_0_0.jpg");
+//    m_chart->addSeries(series);
+//    m_chart->createDefaultAxes();
+//    m_chart->setAcceptHoverEvents(true);
+
+//    setRenderHint(QPainter::Antialiasing);
+//    scene()->addItem(m_chart);
+
+//    m_coordX = new QGraphicsSimpleTextItem(m_chart);
+//    m_coordX->setPos(m_chart->size().width()/2 - 50, m_chart->size().height());
+//    m_coordX->setText("X: ");
+
+//    m_coordY = new QGraphicsSimpleTextItem(m_chart);
+//    m_coordY->setPos(m_chart->size().width()/2 + 50, m_chart->size().height());
+//    m_coordY->setText("Y: ");
+
+//    connect(series, &QLineSeries::clicked, this, &LineChart::keepCallout);
+//    connect(series, &QLineSeries::hovered, this, &LineChart::tooltip);
+
+//    this->setMouseTracking(true);
+}
 
 QLineSeries* LineChart::getLine(const QString &path){
     QImage inputImg(path);
-    //width = inputImg.width();
-    //height = inputImg.height();
     QLineSeries *series = new QLineSeries;
     for (int i = 0; i < inputImg.width(); ++i) {
         for (int j = 0; j < inputImg.height(); ++j) {

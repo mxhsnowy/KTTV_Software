@@ -16,16 +16,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    callout.cpp \
-    linechart.cpp \
     main.cpp \
     mainwindow.cpp \
     mygraphicsitem.cpp \
     mygraphicsview.cpp
 
 HEADERS += \
-    callout.h \
-    linechart.h \
     mainwindow.h \
     mygraphicsitem.h \
     mygraphicsview.h
@@ -37,3 +33,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=
+
+RESOURCES += \
+    Icon.qrc

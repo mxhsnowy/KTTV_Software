@@ -8,7 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->Mask->setMouseTracking(true);
 
-    ui->toolBar->addWidget(name);
+
+    connect(ui->actionZoom, &QAction::triggered, this, &MainWindow::zoomToggled);
+    connect(ui->actionOpenFolder, &QAction::triggered, this, &MainWindow::openFolder);
+    connect(ui->showFolder, &QListWidget::itemClicked, this, &MainWindow::itemClicked);
+
+
     //ui->Mask->scene()->installEventFilter(this);
 }
 bool MainWindow::eventFilter(QObject *object, QEvent *event){
@@ -26,7 +31,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event){
        ui->Mask->setToolTip(QString("%1, %2, %3").arg(QString::number(x), QString::number(y), QString::number(average)));
        //ui->label_X->setText(QString::number(x));
        //ui->label_Y->setText(QString::number(y));
-       name->setText(QString::number(average));
+       //name->setText(QString::number(average));
 
        return true;
      } else {
@@ -38,9 +43,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::on_actionOpenFolder_triggered()
-{
+void MainWindow::openFolder(){
     QString defaultDir = QDir::homePath();
     QSettings lastDir;
     chosenDir = QFileDialog::getExistingDirectory(this, tr("Chọn thư mục"),
@@ -68,11 +71,7 @@ void MainWindow::on_actionOpenFolder_triggered()
 
 }
 
-
-
-void MainWindow::on_showFolder_itemClicked(QListWidgetItem *item)
-{
-
+void MainWindow::itemClicked(QListWidgetItem *item){
     if(image.load(chosenDir + "\\" + item->text())){
         scene->clear();
         scene->installEventFilter(this);
@@ -81,12 +80,10 @@ void MainWindow::on_showFolder_itemClicked(QListWidgetItem *item)
         ui->Mask->setScene(scene);
         ui->Mask->fitInView(it, Qt::KeepAspectRatioByExpanding);
     }
-
 }
 
-
-
-void MainWindow::on_actionZoom_toggled(bool enabled)
-{
+void MainWindow::zoomToggled(bool enabled){
     ui->Mask->zoomEnabled = enabled;
 }
+
+

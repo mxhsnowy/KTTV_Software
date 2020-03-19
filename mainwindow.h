@@ -28,16 +28,12 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
-    void on_actionOpenFolder_triggered();
-
-
-    void on_showFolder_itemClicked(QListWidgetItem *item);
-
-
-    void on_actionZoom_toggled(bool arg1);
+    void zoomToggled(bool enabled);
+    void openFolder();
+    void itemClicked(QListWidgetItem *item);
 
 private:
-    QLabel *name = new QLabel;
+    //QLabel *name = new QLabel;
     QPixmap image;
     enum Type{moisture = 0,
                 pressure = 1,
