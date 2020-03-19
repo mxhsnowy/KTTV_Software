@@ -29,9 +29,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event){
        int average = (color.red()+color.green()+color.blue())/3;
        ui->Mask->toolTip();
        ui->Mask->setToolTip(QString("%1, %2, %3").arg(QString::number(x), QString::number(y), QString::number(average)));
-       //ui->label_X->setText(QString::number(x));
-       //ui->label_Y->setText(QString::number(y));
-       //name->setText(QString::number(average));
 
        return true;
      } else {
