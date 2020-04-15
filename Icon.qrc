@@ -1,2 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/icon">
+        <file>icons/drawLine.png</file>
+        <file>icons/openFolder.png</file>
+        <file>icons/splitImg.png</file>
+        <file>icons/zoomOff.png</file>
+        <file>icons/zoomOn.png</file>
+    </qresource>
+</RCC>

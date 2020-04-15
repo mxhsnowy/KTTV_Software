@@ -15,9 +15,9 @@ private:
 protected:
     void wheelEvent(QWheelEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-
+    void mousePressEvent(QMouseEvent *event);
 //    void mousePressEvent(QMouseEvent *event);
-//    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
 public:
 

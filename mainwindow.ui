@@ -11,67 +11,74 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Phần mềm khí tượng thủy văn</string>
   </property>
   <property name="locale">
    <locale language="Vietnamese" country="Vietnam"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <property name="spacing">
-     <number>4</number>
-    </property>
-    <property name="leftMargin">
-     <number>4</number>
-    </property>
-    <property name="topMargin">
-     <number>4</number>
-    </property>
-    <property name="rightMargin">
-     <number>4</number>
-    </property>
-    <property name="bottomMargin">
-     <number>4</number>
-    </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QListWidget" name="showFolder">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>250</width>
-        <height>70</height>
-       </size>
-      </property>
-      <property name="movement">
-       <enum>QListView::Static</enum>
-      </property>
-      <property name="flow">
-       <enum>QListView::TopToBottom</enum>
-      </property>
-      <property name="isWrapping" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="resizeMode">
-       <enum>QListView::Adjust</enum>
-      </property>
-      <property name="gridSize">
-       <size>
-        <width>260</width>
-        <height>95</height>
-       </size>
-      </property>
-      <property name="viewMode">
-       <enum>QListView::IconMode</enum>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QListWidget" name="showFolder">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="movement">
+         <enum>QListView::Static</enum>
+        </property>
+        <property name="flow">
+         <enum>QListView::TopToBottom</enum>
+        </property>
+        <property name="isWrapping" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="resizeMode">
+         <enum>QListView::Adjust</enum>
+        </property>
+        <property name="gridSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="viewMode">
+         <enum>QListView::IconMode</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="prev">
+          <property name="text">
+           <string>Trước</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="next">
+          <property name="text">
+           <string>Tiếp</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -102,8 +109,14 @@
    <addaction name="actionOpenFolder"/>
    <addaction name="separator"/>
    <addaction name="actionZoom"/>
+   <addaction name="actionpdf2png"/>
+   <addaction name="actionDrawingLine"/>
   </widget>
   <action name="actionOpenFolder">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/openFolder.png</normaloff>:/icon/icons/openFolder.png</iconset>
+   </property>
    <property name="text">
     <string>Mở Thư Mục</string>
    </property>
@@ -115,11 +128,34 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/zoomOff.png</normaloff>
+     <normalon>:/icon/icons/zoomOn.png</normalon>:/icon/icons/zoomOff.png</iconset>
+   </property>
    <property name="text">
     <string>Thu phóng</string>
    </property>
    <property name="toolTip">
     <string>Phóng to, thu nhỏ bằng con lăn chuột</string>
+   </property>
+  </action>
+  <action name="actionpdf2png">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/splitImg.png</normaloff>:/icon/icons/splitImg.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tách đồ thị</string>
+   </property>
+  </action>
+  <action name="actionDrawingLine">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/drawLine.png</normaloff>:/icon/icons/drawLine.png</iconset>
+   </property>
+   <property name="text">
+    <string>Vẽ đường đồ thị</string>
    </property>
   </action>
  </widget>
@@ -130,6 +166,8 @@
    <header location="global">mygraphicsview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="Icon.qrc"/>
+ </resources>
  <connections/>
 </ui>
