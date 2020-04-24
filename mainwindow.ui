@@ -17,7 +17,22 @@
    <locale language="Vietnamese" country="Vietnam"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>4</number>
+    </property>
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>2</number>
+    </property>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -27,6 +42,11 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
         </property>
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -60,37 +80,185 @@
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="prev">
-          <property name="text">
-           <string>Trước</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="next">
-          <property name="text">
-           <string>Tiếp</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
      </layout>
     </item>
     <item>
+     <widget class="MyGraphicsView" name="Mask">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>2</number>
+      </property>
       <item>
-       <widget class="MyGraphicsView" name="Mask">
+       <widget class="QTableWidget" name="dataView">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="columnCount">
+         <number>2</number>
+        </property>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <column/>
+        <column/>
        </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="horizontalSpacing">
+         <number>4</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>2</number>
+        </property>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="nextDay">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ngày tiếp theo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Tên ảnh</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Loại đồ thị</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="imgName">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Panel</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="prevDay">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ngày trước đó</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="imgType">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Panel</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ngày</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="day">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Panel</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -99,6 +267,12 @@
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>36</width>
+     <height>36</height>
+    </size>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -110,7 +284,10 @@
    <addaction name="separator"/>
    <addaction name="actionZoom"/>
    <addaction name="actionpdf2png"/>
-   <addaction name="actionDrawingLine"/>
+   <addaction name="actionreport"/>
+   <addaction name="actionHelp"/>
+   <addaction name="actionQuit"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionOpenFolder">
    <property name="icon">
@@ -149,13 +326,40 @@
     <string>Tách đồ thị</string>
    </property>
   </action>
-  <action name="actionDrawingLine">
+  <action name="actionreport">
    <property name="icon">
     <iconset resource="Icon.qrc">
-     <normaloff>:/icon/icons/drawLine.png</normaloff>:/icon/icons/drawLine.png</iconset>
+     <normaloff>:/icon/icons/export.png</normaloff>:/icon/icons/export.png</iconset>
    </property>
    <property name="text">
-    <string>Vẽ đường đồ thị</string>
+    <string>report</string>
+   </property>
+   <property name="toolTip">
+    <string>Xuất dữ liệu ra tập tin.</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/help.png</normaloff>:/icon/icons/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Trợ giúp</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/quit.png</normaloff>:/icon/icons/quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Thoát</string>
    </property>
   </action>
  </widget>

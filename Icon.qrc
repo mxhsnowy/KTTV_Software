@@ -5,5 +5,9 @@
         <file>icons/splitImg.png</file>
         <file>icons/zoomOff.png</file>
         <file>icons/zoomOn.png</file>
+        <file>icons/export.png</file>
+        <file>icons/help.png</file>
+        <file>icons/splash.jpeg</file>
+        <file>icons/quit.png</file>
     </qresource>
 </RCC>
