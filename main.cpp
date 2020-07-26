@@ -8,9 +8,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     a.setOrganizationName("AI Academy");
-    a.setApplicationName("Phần mềm khí tượng thủy văn");
+    a.setApplicationName("Phần mềm Số hóa đồ thị khí tượng thủy văn");
     MainWindow w;
-    QPixmap ss(":/icon/icons/splash.jpeg");
+    QPixmap ss(":/icon/icons/KttvIcon.jpg");
     QSplashScreen splash(ss);
     splash.show();
     splash.showMessage("Khởi tạo chương trình .");

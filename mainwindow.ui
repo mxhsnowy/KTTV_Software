@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Phần mềm khí tượng thủy văn</string>
+   <string>Phần mềm Số hóa đồ thị khí tượng thủy văn</string>
   </property>
   <property name="locale">
    <locale language="Vietnamese" country="Vietnam"/>
@@ -117,13 +117,16 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <property name="horizontalSpacing">
          <number>4</number>
         </property>
         <property name="verticalSpacing">
          <number>2</number>
         </property>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QPushButton" name="nextDay">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -137,14 +140,29 @@
            </font>
           </property>
           <property name="text">
-           <string>Ngày tiếp theo</string>
+           <string>Ngày tiếp</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="daychart">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
          </widget>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -155,44 +173,50 @@
            </font>
           </property>
           <property name="text">
-           <string>Tên ảnh</string>
+           <string>Mã tài liệu</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Loại đồ thị</string>
+           <string>Ngày tháng</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="imgName">
+         <widget class="QLineEdit" name="IDchart">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
            </font>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::Panel</enum>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="stationBox">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
-          <property name="text">
-           <string/>
+          <property name="editable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QPushButton" name="prevDay">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -206,59 +230,71 @@
            </font>
           </property>
           <property name="text">
-           <string>Ngày trước đó</string>
+           <string>Ngày trước</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="imgType">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Panel</enum>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Ngày</string>
+           <string>Tên trạm</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="day">
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_4">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
            </font>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::Panel</enum>
-          </property>
           <property name="text">
-           <string/>
+           <string>Mã trạm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="stationID">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="digitalize">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Tạo báo cáo </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="save">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Lưu kết quả</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -282,9 +318,10 @@
    </attribute>
    <addaction name="actionOpenFolder"/>
    <addaction name="separator"/>
+   <addaction name="actionrotateAndCrop"/>
    <addaction name="actionZoom"/>
-   <addaction name="actionpdf2png"/>
-   <addaction name="actionreport"/>
+   <addaction name="actionCutGrid"/>
+   <addaction name="actionSetting"/>
    <addaction name="actionHelp"/>
    <addaction name="actionQuit"/>
    <addaction name="separator"/>
@@ -317,27 +354,6 @@
     <string>Phóng to, thu nhỏ bằng con lăn chuột</string>
    </property>
   </action>
-  <action name="actionpdf2png">
-   <property name="icon">
-    <iconset resource="Icon.qrc">
-     <normaloff>:/icon/icons/splitImg.png</normaloff>:/icon/icons/splitImg.png</iconset>
-   </property>
-   <property name="text">
-    <string>Tách đồ thị</string>
-   </property>
-  </action>
-  <action name="actionreport">
-   <property name="icon">
-    <iconset resource="Icon.qrc">
-     <normaloff>:/icon/icons/export.png</normaloff>:/icon/icons/export.png</iconset>
-   </property>
-   <property name="text">
-    <string>report</string>
-   </property>
-   <property name="toolTip">
-    <string>Xuất dữ liệu ra tập tin.</string>
-   </property>
-  </action>
   <action name="actionHelp">
    <property name="icon">
     <iconset resource="Icon.qrc">
@@ -360,6 +376,62 @@
    </property>
    <property name="toolTip">
     <string>Thoát</string>
+   </property>
+  </action>
+  <action name="actionSetting">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/settings.png</normaloff>:/icon/icons/settings.png</iconset>
+   </property>
+   <property name="text">
+    <string>Setting</string>
+   </property>
+   <property name="toolTip">
+    <string>Chỉnh sửa tham số đồ thị</string>
+   </property>
+  </action>
+  <action name="actionCutGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/cropGrid.png</normaloff>
+     <normalon>:/icon/icons/rectcrop.png</normalon>:/icon/icons/cropGrid.png</iconset>
+   </property>
+   <property name="text">
+    <string>CutGrid</string>
+   </property>
+   <property name="toolTip">
+    <string>Khoanh vùng tính toán</string>
+   </property>
+  </action>
+  <action name="actiondrawMask">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/draw.png</normaloff>
+     <normalon>:/icon/icons/drawEnabled.png</normalon>:/icon/icons/draw.png</iconset>
+   </property>
+   <property name="text">
+    <string>drawMask</string>
+   </property>
+   <property name="toolTip">
+    <string>Vẽ đường đặc tính thay thế</string>
+   </property>
+  </action>
+  <action name="actionrotateAndCrop">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/rotateandcrop.png</normaloff>:/icon/icons/rotateandcrop.png</iconset>
+   </property>
+   <property name="text">
+    <string>rotateAndCrop</string>
+   </property>
+   <property name="toolTip">
+    <string>Cắt và xoay ảnh tự động</string>
    </property>
   </action>
  </widget>

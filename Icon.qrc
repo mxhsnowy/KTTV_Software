@@ -9,5 +9,20 @@
         <file>icons/help.png</file>
         <file>icons/splash.jpeg</file>
         <file>icons/quit.png</file>
+        <file>icons/save.png</file>
+        <file>icons/PDF2Imgs.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/cropGrid.png</file>
+        <file>icons/rectcrop.png</file>
+        <file>icons/KttvIcon.jpg</file>
+        <file>icons/logo.jpg</file>
+        <file>icons/KttvIconCrop.jpg</file>
+        <file>icons/draw.png</file>
+        <file>icons/drawEnabled.png</file>
+        <file>icons/rotateandcrop.png</file>
+        <file>release/stations/station_id.txt</file>
+        <file>release/stations/station_idw.txt</file>
+        <file>release/stations/station_name.txt</file>
+        <file>release/stations/station_namew.txt</file>
     </qresource>
 </RCC>

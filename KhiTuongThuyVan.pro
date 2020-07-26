@@ -9,24 +9,30 @@ CONFIG += c++11
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-RC_ICONS = logo.ico
+RC_ICONS = KttvIconCrop.ico
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    input.cpp \
+    linedetection.cpp \
     main.cpp \
     mainwindow.cpp \
     mygraphicsitem.cpp \
     mygraphicsview.cpp
 
 HEADERS += \
+    convert.h \
+    input.h \
+    linedetection.h \
     mainwindow.h \
     mygraphicsitem.h \
     mygraphicsview.h
 
 FORMS += \
+    input.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -38,3 +44,8 @@ DISTFILES +=
 
 RESOURCES += \
     Icon.qrc
+win32:CONFIG(release, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/install/x64/vc15/lib/" -lopencv_world420
+else:win32:CONFIG(debug, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/install/x64/vc15/lib/" -lopencv_world420d
+
+INCLUDEPATH += "E:/opencv 4.2.0/buildx64/install/include"
+DEPENDPATH += "E:/opencv 4.2.0/buildx64/install/include"

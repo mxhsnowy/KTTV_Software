@@ -2,39 +2,58 @@
 
 MyGraphicsView::MyGraphicsView(QWidget *parent):QGraphicsView(parent)
 {
-    setDragMode(RubberBandDrag);
+    setDragMode(QGraphicsView::RubberBandDrag);
+
     setInteractive(true);
     setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing);
+//    QPen pen;
+//    pen.setWidth(1);
+//    pen.setColor(Qt::blue);
+//    pen.setCapStyle(Qt::RoundCap);
+//    painter.setPen(pen);
+
 }
 void MyGraphicsView::wheelEvent(QWheelEvent *event){
-//    if(zoomEnabled){
-//        if(event->orientation() == Qt::Vertical){
-//            double angleDeltaY=event->angleDelta().y();
-//            double zoomFactor= qPow(1.0015,angleDeltaY);
-//            scale(zoomFactor,zoomFactor);
-//            if(angleDeltaY>0){
-//                this->centerOn(scenePos);
-//                scenePos=this->mapToScene(event->pos());
-//            }
-//            this->viewport()->update();
-//            event->accept();
-//        }
-//        else {
-//            event->ignore();
-//        }
-//    }
-//    else {
-//        QGraphicsView::wheelEvent(event);
-//    }
-//    QGraphicsView::wheelEvent(event);
+    if(zoomEnabled){
+        if(event->orientation() == Qt::Vertical){
+            double angleDeltaY=event->angleDelta().y();
+            double zoomFactor= qPow(1.0015,angleDeltaY);
+            scale(zoomFactor,zoomFactor);
+            if(angleDeltaY>0){
+                this->centerOn(scenePos);
+                scenePos=this->mapToScene(event->pos());
+            }
+            this->viewport()->update();
+            event->accept();
+        }
+        else {
+            event->ignore();
+        }
+    }
+    else {
+        QGraphicsView::wheelEvent(event);
+    }
+    QGraphicsView::wheelEvent(event);
 }
 void MyGraphicsView::keyPressEvent(QKeyEvent *event){
     switch (event->key()) {
-    case Qt::Key_Plus:
-        scale(1.1, 1.1);
+    case Qt::Key_Escape:
+        rubberBand->hide();
+        ignore = 1;
         break;
-    case Qt::Key_Minus:
-        scale(1/1.1, 1/1.1);
+    case Qt::Key_Right:
+        //scale(1.1, 1.1);
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() + 5);
+        break;
+    case Qt::Key_Left:
+        //scale(1/1.1, 1/1.1);
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - 5);
+        break;
+    case Qt::Key_Up:
+        verticalScrollBar()->setValue(verticalScrollBar()->value() + 5);
+        break;
+    case Qt::Key_Down:
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - 5);
         break;
     }
 }
@@ -43,28 +62,111 @@ void MyGraphicsView::resizeEvent(QResizeEvent *event){
 }
 void MyGraphicsView::mousePressEvent(QMouseEvent *event){
     startPoint = event->pos();
-    if(zoomEnabled){
-//        if(!rubberBandRect){
-//           rubberBandRect =
-//        }
+    if(/*zoomEnabled || */grid){
         rubberBandRect.setTopLeft(this->mapToScene(startPoint));
         rubberBand->setGeometry(QRect(startPoint, QSize()));
         rubberBand->show();
+        setCursor(Qt::CrossCursor);
     }
+    else if (drawEnabled) {
+//         if(QGraphicsPixmapItem *item = qgraphicsitem_cast<QGraphicsPixmapItem *>(itemAt(event->pos()))){
+//            QPointF p = item->mapFromScene(mapToScene(event->pos()));
+//            QPoint pixel_pos = p.toPoint();
+//            xdraw.push_back(pixel_pos);
+//         }
+        xdraw.push_back(this->mapToScene(event->pos()));
+        //qDebug()<<"Mouse pressed"<<endl;
+        //ydraw.push_back(event->y());
+
+    }
+    else if (event->button() == Qt::RightButton) {
+        drag = 1;
+        panStartX = event->x();
+        panStartY = event->y();
+        setCursor(Qt::ClosedHandCursor);
+        event->accept();
+    }
+
+    event->ignore();
+}
+
+void MyGraphicsView::drawLineTo(const QPoint &endPoint){
+    QPainter painter(&image);
+        painter.setPen(QPen(Qt::blue, 1, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        painter.drawLine(startPoint, endPoint);
+
+
+        int rad = (1 / 2) + 2;
+        update(QRect(startPoint, endPoint).normalized()
+                                         .adjusted(-rad, -rad, +rad, +rad));
+        startPoint = endPoint;
 }
 void MyGraphicsView::mouseMoveEvent(QMouseEvent *event){
-    if(zoomEnabled){
+    //setToolTip(QString("gpview: %1 %2\n gpitem: %3 %4").arg(event->x()).arg(event->y()).arg(mapToScene(event->pos()).x()).arg(mapToScene(event->pos()).y()));
+    if(/*zoomEnabled ||*/ grid){
+        //QPoint endPoint = this->mapToScene(event->pos()).toPoint();
         rubberBand->setGeometry(QRect(startPoint, event->pos()).normalized());
     }
-    QGraphicsView::mouseMoveEvent(event);
+    else if (drawEnabled) {
+//        if(QGraphicsPixmapItem *item = qgraphicsitem_cast<QGraphicsPixmapItem *>(itemAt(event->pos()))){
+//           QPointF p = item->mapFromScene(mapToScene(event->pos()));
+//           QPoint pixel_pos = p.toPoint();
+//           xdraw.push_back(pixel_pos);
+//        }
+
+        xdraw.push_back(mapToScene(event->pos()));
+        qDebug()<<mapToScene(event->pos())<<endl;
+
+        //drawLineTo(event->pos());
+        //painter.drawLine(startPoint, event->pos());
+        //startPoint = event->pos();
+    }
+    else if (drag) {
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - (event->x() - panStartX));
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - (event->y() - panStartY));
+        panStartX = event->x();
+        panStartY = event->y();
+        event->accept();
+    }
+    event->ignore();
+    //QGraphicsView::mouseMoveEvent(event);
 
 }
+
 void MyGraphicsView::mouseReleaseEvent(QMouseEvent *event){
-    if(zoomEnabled){
-        rubberBand->hide();
-        rubberBandRect.setBottomRight(this->mapToScene(event->pos()));
-        this->fitInView(rubberBandRect, Qt::KeepAspectRatio);
+//    if(zoomEnabled){
+//        rubberBand->hide();
+//        rubberBandRect.setBottomRight(this->mapToScene(event->pos()));
+//        this->fitInView(rubberBandRect, Qt::KeepAspectRatio);
+//    }
+
+    if(ignore){
+        event->ignore();
+        ignore = 0;
+        return;
     }
+    if(grid){
+        rubberBand->hide();
+        rubberBandRect.setBottomRight(mapToScene(event->pos()));
+        copyVariable(rubberBandRect.left(), rubberBandRect.top(),
+                     rubberBandRect.left() + rubberBandRect.width(), rubberBandRect.top() + rubberBandRect.height());
+
+    }
+    else if (drawEnabled) {
+        xdraw.push_back(mapToScene(event->pos()));
+        drawEnabled = false;
+        getMouseDrawPoints(xdraw);
+        xdraw.clear();
+        qDebug()<<"Mouse released"<<endl;
+
+    }
+    else if (event->button() == Qt::RightButton) {
+        drag = 0;
+        event->accept();
+    }
+    setCursor(Qt::ArrowCursor);
+    event->ignore();
 }
 
 
