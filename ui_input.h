@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'input.ui'
 **
-** Created by: Qt User Interface Compiler version 5.14.1
+** Created by: Qt User Interface Compiler version 5.15.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -37,8 +37,6 @@ public:
     QSpinBox *days;
     QLabel *lbtSpace;
     QDoubleSpinBox *timeGet;
-    QLabel *label;
-    QSpinBox *biasBox;
     QVBoxLayout *verticalLayout_2;
     QLabel *lblStart;
     QDoubleSpinBox *levelStart;
@@ -46,8 +44,6 @@ public:
     QDoubleSpinBox *levelEnd;
     QLabel *lblSpace;
     QDoubleSpinBox *levelGet;
-    QLabel *lblDec;
-    QDoubleSpinBox *levelDec;
     QPushButton *Done;
 
     void setupUi(QDialog *Input)
@@ -125,20 +121,6 @@ public:
 
         verticalLayout->addWidget(timeGet);
 
-        label = new QLabel(Input);
-        label->setObjectName(QString::fromUtf8("label"));
-        label->setFont(font);
-
-        verticalLayout->addWidget(label);
-
-        biasBox = new QSpinBox(Input);
-        biasBox->setObjectName(QString::fromUtf8("biasBox"));
-        biasBox->setFont(font);
-        biasBox->setMinimum(-100);
-        biasBox->setMaximum(100);
-
-        verticalLayout->addWidget(biasBox);
-
 
         horizontalLayout->addLayout(verticalLayout);
 
@@ -184,20 +166,6 @@ public:
 
         verticalLayout_2->addWidget(levelGet);
 
-        lblDec = new QLabel(Input);
-        lblDec->setObjectName(QString::fromUtf8("lblDec"));
-        lblDec->setFont(font);
-
-        verticalLayout_2->addWidget(lblDec);
-
-        levelDec = new QDoubleSpinBox(Input);
-        levelDec->setObjectName(QString::fromUtf8("levelDec"));
-        levelDec->setFont(font);
-        levelDec->setMinimum(-100.000000000000000);
-        levelDec->setMaximum(100.000000000000000);
-
-        verticalLayout_2->addWidget(levelDec);
-
 
         horizontalLayout->addLayout(verticalLayout_2);
 
@@ -224,11 +192,9 @@ public:
         lbtEnd->setText(QCoreApplication::translate("Input", "Th\341\273\235i gian k\341\272\277t th\303\272c + s\341\273\221 ng\303\240y", nullptr));
         timeEnd->setDisplayFormat(QCoreApplication::translate("Input", "h:mm ", nullptr));
         lbtSpace->setText(QCoreApplication::translate("Input", "Th\341\273\235i gian l\341\272\245y m\341\272\253u (ph\303\272t)", nullptr));
-        label->setText(QCoreApplication::translate("Input", "D\341\273\213ch chuy\341\273\203n \304\221i\341\273\203m l\341\272\245y m\341\272\253u", nullptr));
         lblStart->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng b\341\272\257t \304\221\341\272\247u", nullptr));
         lblEnd->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng k\341\272\277t th\303\272c", nullptr));
         lblSpace->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng/1 d\303\262ng", nullptr));
-        lblDec->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng gi\341\272\243m", nullptr));
         Done->setText(QCoreApplication::translate("Input", "\303\201p d\341\273\245ng", nullptr));
     } // retranslateUi
 

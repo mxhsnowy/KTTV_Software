@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.14.1
+** Created by: Qt User Interface Compiler version 5.15.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -22,6 +22,8 @@
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
@@ -38,9 +40,13 @@ public:
     QAction *actionHelp;
     QAction *actionQuit;
     QAction *actionSetting;
+    QAction *actionRotate;
+    QAction *actionMarking;
     QAction *actionCutGrid;
-    QAction *actiondrawMask;
-    QAction *actionrotateAndCrop;
+    QAction *actionRotateBack;
+    QAction *actionPicking_Points;
+    QAction *actionlimitLine;
+    QAction *actionDraw;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout_2;
@@ -48,20 +54,27 @@ public:
     MyGraphicsView *Mask;
     QVBoxLayout *verticalLayout;
     QTableWidget *dataView;
+    QGridLayout *gridLayout_3;
+    QSpinBox *timeUD;
+    QSpinBox *levelUD;
+    QLabel *label_5;
+    QLabel *label_6;
+    QPushButton *change;
     QGridLayout *gridLayout;
+    QLabel *label_3;
+    QPushButton *prevDay;
+    QLineEdit *IDchart;
     QPushButton *nextDay;
+    QComboBox *stationID;
+    QLabel *label_4;
+    QLabel *label_2;
+    QComboBox *stationBox;
     QLineEdit *daychart;
     QLabel *label;
-    QLabel *label_3;
-    QLineEdit *IDchart;
-    QComboBox *stationBox;
-    QPushButton *prevDay;
-    QLabel *label_2;
-    QLabel *label_4;
-    QComboBox *stationID;
     QPushButton *digitalize;
     QPushButton *save;
     QToolBar *toolBar;
+    QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -96,25 +109,50 @@ public:
         QIcon icon4;
         icon4.addFile(QString::fromUtf8(":/icon/icons/settings.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionSetting->setIcon(icon4);
+        actionRotate = new QAction(MainWindow);
+        actionRotate->setObjectName(QString::fromUtf8("actionRotate"));
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icon/icons/imgRotate.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionRotate->setIcon(icon5);
+        actionMarking = new QAction(MainWindow);
+        actionMarking->setObjectName(QString::fromUtf8("actionMarking"));
+        actionMarking->setCheckable(true);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icon/icons/curveoff.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon6.addFile(QString::fromUtf8(":/icon/icons/clicking.png"), QSize(), QIcon::Normal, QIcon::On);
+        actionMarking->setIcon(icon6);
         actionCutGrid = new QAction(MainWindow);
         actionCutGrid->setObjectName(QString::fromUtf8("actionCutGrid"));
         actionCutGrid->setCheckable(true);
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/icon/icons/cropGrid.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon5.addFile(QString::fromUtf8(":/icon/icons/rectcrop.png"), QSize(), QIcon::Normal, QIcon::On);
-        actionCutGrid->setIcon(icon5);
-        actiondrawMask = new QAction(MainWindow);
-        actiondrawMask->setObjectName(QString::fromUtf8("actiondrawMask"));
-        actiondrawMask->setCheckable(true);
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/icon/icons/draw.png"), QSize(), QIcon::Normal, QIcon::Off);
-        icon6.addFile(QString::fromUtf8(":/icon/icons/drawEnabled.png"), QSize(), QIcon::Normal, QIcon::On);
-        actiondrawMask->setIcon(icon6);
-        actionrotateAndCrop = new QAction(MainWindow);
-        actionrotateAndCrop->setObjectName(QString::fromUtf8("actionrotateAndCrop"));
         QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/icon/icons/rotateandcrop.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionrotateAndCrop->setIcon(icon7);
+        icon7.addFile(QString::fromUtf8(":/icon/icons/handCrop.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QString::fromUtf8(":/icon/icons/rectcrop.png"), QSize(), QIcon::Normal, QIcon::On);
+        actionCutGrid->setIcon(icon7);
+        actionRotateBack = new QAction(MainWindow);
+        actionRotateBack->setObjectName(QString::fromUtf8("actionRotateBack"));
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/icon/icons/imgRotateBack.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionRotateBack->setIcon(icon8);
+        actionPicking_Points = new QAction(MainWindow);
+        actionPicking_Points->setObjectName(QString::fromUtf8("actionPicking_Points"));
+        actionPicking_Points->setCheckable(true);
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/icon/icons/addPoints.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionPicking_Points->setIcon(icon9);
+        actionlimitLine = new QAction(MainWindow);
+        actionlimitLine->setObjectName(QString::fromUtf8("actionlimitLine"));
+        actionlimitLine->setCheckable(true);
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/icon/icons/limitLine.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon10.addFile(QString::fromUtf8(":/icon/icons/clicking.png"), QSize(), QIcon::Normal, QIcon::On);
+        actionlimitLine->setIcon(icon10);
+        actionDraw = new QAction(MainWindow);
+        actionDraw->setObjectName(QString::fromUtf8("actionDraw"));
+        actionDraw->setCheckable(true);
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/icon/icons/draw.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon11.addFile(QString::fromUtf8(":/icon/icons/drawing.png"), QSize(), QIcon::Normal, QIcon::On);
+        actionDraw->setIcon(icon11);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -171,32 +209,120 @@ public:
 
         verticalLayout->addWidget(dataView);
 
+        gridLayout_3 = new QGridLayout();
+        gridLayout_3->setSpacing(2);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        timeUD = new QSpinBox(centralwidget);
+        timeUD->setObjectName(QString::fromUtf8("timeUD"));
+        timeUD->setFont(font);
+        timeUD->setMinimum(-1000);
+        timeUD->setMaximum(1000);
+
+        gridLayout_3->addWidget(timeUD, 2, 0, 1, 1);
+
+        levelUD = new QSpinBox(centralwidget);
+        levelUD->setObjectName(QString::fromUtf8("levelUD"));
+        levelUD->setFont(font);
+        levelUD->setMinimum(-1000);
+        levelUD->setMaximum(1000);
+
+        gridLayout_3->addWidget(levelUD, 2, 1, 1, 1);
+
+        label_5 = new QLabel(centralwidget);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setFont(font);
+
+        gridLayout_3->addWidget(label_5, 1, 1, 1, 1);
+
+        label_6 = new QLabel(centralwidget);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setFont(font);
+
+        gridLayout_3->addWidget(label_6, 1, 0, 1, 1);
+
+
+        verticalLayout->addLayout(gridLayout_3);
+
+        change = new QPushButton(centralwidget);
+        change->setObjectName(QString::fromUtf8("change"));
+        change->setFont(font);
+
+        verticalLayout->addWidget(change);
+
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
         gridLayout->setHorizontalSpacing(4);
         gridLayout->setVerticalSpacing(2);
-        nextDay = new QPushButton(centralwidget);
-        nextDay->setObjectName(QString::fromUtf8("nextDay"));
+        label_3 = new QLabel(centralwidget);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setFont(font);
+
+        gridLayout->addWidget(label_3, 2, 0, 1, 1);
+
+        prevDay = new QPushButton(centralwidget);
+        prevDay->setObjectName(QString::fromUtf8("prevDay"));
         QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(prevDay->sizePolicy().hasHeightForWidth());
+        prevDay->setSizePolicy(sizePolicy2);
+        prevDay->setFont(font);
+
+        gridLayout->addWidget(prevDay, 5, 0, 1, 1);
+
+        IDchart = new QLineEdit(centralwidget);
+        IDchart->setObjectName(QString::fromUtf8("IDchart"));
+        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(IDchart->sizePolicy().hasHeightForWidth());
+        IDchart->setSizePolicy(sizePolicy3);
+        IDchart->setFont(font);
+
+        gridLayout->addWidget(IDchart, 1, 1, 1, 1);
+
+        nextDay = new QPushButton(centralwidget);
+        nextDay->setObjectName(QString::fromUtf8("nextDay"));
         sizePolicy2.setHeightForWidth(nextDay->sizePolicy().hasHeightForWidth());
         nextDay->setSizePolicy(sizePolicy2);
         nextDay->setFont(font);
 
-        gridLayout->addWidget(nextDay, 4, 1, 1, 1);
+        gridLayout->addWidget(nextDay, 5, 1, 1, 1);
+
+        stationID = new QComboBox(centralwidget);
+        stationID->setObjectName(QString::fromUtf8("stationID"));
+        stationID->setFont(font);
+        stationID->setEditable(true);
+
+        gridLayout->addWidget(stationID, 4, 1, 1, 1);
+
+        label_4 = new QLabel(centralwidget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setFont(font);
+
+        gridLayout->addWidget(label_4, 4, 0, 1, 1);
+
+        label_2 = new QLabel(centralwidget);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setFont(font);
+
+        gridLayout->addWidget(label_2, 3, 0, 1, 1);
+
+        stationBox = new QComboBox(centralwidget);
+        stationBox->setObjectName(QString::fromUtf8("stationBox"));
+        stationBox->setFont(font);
+        stationBox->setEditable(true);
+
+        gridLayout->addWidget(stationBox, 3, 1, 1, 1);
 
         daychart = new QLineEdit(centralwidget);
         daychart->setObjectName(QString::fromUtf8("daychart"));
-        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(daychart->sizePolicy().hasHeightForWidth());
         daychart->setSizePolicy(sizePolicy3);
         daychart->setFont(font);
 
-        gridLayout->addWidget(daychart, 1, 1, 1, 1);
+        gridLayout->addWidget(daychart, 2, 1, 1, 1);
 
         label = new QLabel(centralwidget);
         label->setObjectName(QString::fromUtf8("label"));
@@ -204,55 +330,7 @@ public:
         label->setSizePolicy(sizePolicy2);
         label->setFont(font);
 
-        gridLayout->addWidget(label, 0, 0, 1, 1);
-
-        label_3 = new QLabel(centralwidget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-        label_3->setFont(font);
-
-        gridLayout->addWidget(label_3, 1, 0, 1, 1);
-
-        IDchart = new QLineEdit(centralwidget);
-        IDchart->setObjectName(QString::fromUtf8("IDchart"));
-        sizePolicy3.setHeightForWidth(IDchart->sizePolicy().hasHeightForWidth());
-        IDchart->setSizePolicy(sizePolicy3);
-        IDchart->setFont(font);
-
-        gridLayout->addWidget(IDchart, 0, 1, 1, 1);
-
-        stationBox = new QComboBox(centralwidget);
-        stationBox->setObjectName(QString::fromUtf8("stationBox"));
-        stationBox->setFont(font);
-        stationBox->setEditable(true);
-
-        gridLayout->addWidget(stationBox, 2, 1, 1, 1);
-
-        prevDay = new QPushButton(centralwidget);
-        prevDay->setObjectName(QString::fromUtf8("prevDay"));
-        sizePolicy2.setHeightForWidth(prevDay->sizePolicy().hasHeightForWidth());
-        prevDay->setSizePolicy(sizePolicy2);
-        prevDay->setFont(font);
-
-        gridLayout->addWidget(prevDay, 4, 0, 1, 1);
-
-        label_2 = new QLabel(centralwidget);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setFont(font);
-
-        gridLayout->addWidget(label_2, 2, 0, 1, 1);
-
-        label_4 = new QLabel(centralwidget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setFont(font);
-
-        gridLayout->addWidget(label_4, 3, 0, 1, 1);
-
-        stationID = new QComboBox(centralwidget);
-        stationID->setObjectName(QString::fromUtf8("stationID"));
-        stationID->setFont(font);
-        stationID->setEditable(true);
-
-        gridLayout->addWidget(stationID, 3, 1, 1, 1);
+        gridLayout->addWidget(label, 1, 0, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -277,14 +355,22 @@ public:
         toolBar->setObjectName(QString::fromUtf8("toolBar"));
         toolBar->setIconSize(QSize(36, 36));
         MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
+        statusBar = new QStatusBar(MainWindow);
+        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+        statusBar->setFont(font);
+        MainWindow->setStatusBar(statusBar);
 
         toolBar->addAction(actionOpenFolder);
         toolBar->addSeparator();
-        toolBar->addAction(actionrotateAndCrop);
-        toolBar->addAction(actionZoom);
+        toolBar->addAction(actionRotateBack);
+        toolBar->addAction(actionRotate);
         toolBar->addAction(actionCutGrid);
+        toolBar->addSeparator();
+        toolBar->addAction(actionZoom);
         toolBar->addAction(actionSetting);
-        toolBar->addAction(actionHelp);
+        toolBar->addAction(actionMarking);
+        toolBar->addAction(actionlimitLine);
+        toolBar->addAction(actionDraw);
         toolBar->addAction(actionQuit);
         toolBar->addSeparator();
 
@@ -316,24 +402,43 @@ public:
 #if QT_CONFIG(tooltip)
         actionSetting->setToolTip(QCoreApplication::translate("MainWindow", "Ch\341\273\211nh s\341\273\255a tham s\341\273\221 \304\221\341\273\223 th\341\273\213", nullptr));
 #endif // QT_CONFIG(tooltip)
+        actionRotate->setText(QCoreApplication::translate("MainWindow", "autorotating", nullptr));
+#if QT_CONFIG(tooltip)
+        actionRotate->setToolTip(QCoreApplication::translate("MainWindow", "Xoay \341\272\243nh theo chi\341\273\201u kim \304\221\341\273\223ng h\341\273\223", nullptr));
+#endif // QT_CONFIG(tooltip)
+        actionMarking->setText(QCoreApplication::translate("MainWindow", "Marking", nullptr));
+#if QT_CONFIG(tooltip)
+        actionMarking->setToolTip(QCoreApplication::translate("MainWindow", "\304\220\303\241nh d\341\272\245u 3 \304\221i\341\273\203m thu\341\273\231c \304\221\341\273\223 th\341\273\213 cong", nullptr));
+#endif // QT_CONFIG(tooltip)
         actionCutGrid->setText(QCoreApplication::translate("MainWindow", "CutGrid", nullptr));
 #if QT_CONFIG(tooltip)
-        actionCutGrid->setToolTip(QCoreApplication::translate("MainWindow", "Khoanh v\303\271ng t\303\255nh to\303\241n", nullptr));
+        actionCutGrid->setToolTip(QCoreApplication::translate("MainWindow", "Khoanh v\303\271ng \304\221\341\273\223 th\341\273\213", nullptr));
 #endif // QT_CONFIG(tooltip)
-        actiondrawMask->setText(QCoreApplication::translate("MainWindow", "drawMask", nullptr));
+        actionRotateBack->setText(QCoreApplication::translate("MainWindow", "RotateBack", nullptr));
 #if QT_CONFIG(tooltip)
-        actiondrawMask->setToolTip(QCoreApplication::translate("MainWindow", "V\341\272\275 \304\221\306\260\341\273\235ng \304\221\341\272\267c t\303\255nh thay th\341\272\277", nullptr));
+        actionRotateBack->setToolTip(QCoreApplication::translate("MainWindow", "Xoay \341\272\243nh ng\306\260\341\273\243c chi\341\273\201u kim \304\221\341\273\223ng h\341\273\223", nullptr));
 #endif // QT_CONFIG(tooltip)
-        actionrotateAndCrop->setText(QCoreApplication::translate("MainWindow", "rotateAndCrop", nullptr));
+        actionPicking_Points->setText(QCoreApplication::translate("MainWindow", "Picking Points", nullptr));
 #if QT_CONFIG(tooltip)
-        actionrotateAndCrop->setToolTip(QCoreApplication::translate("MainWindow", "C\341\272\257t v\303\240 xoay \341\272\243nh t\341\273\261 \304\221\341\273\231ng", nullptr));
+        actionPicking_Points->setToolTip(QCoreApplication::translate("MainWindow", "Th\303\252m \304\221i\341\273\203m c\341\272\247n trong b\341\272\243ng", nullptr));
 #endif // QT_CONFIG(tooltip)
-        nextDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y ti\341\272\277p", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "M\303\243 t\303\240i li\341\273\207u", nullptr));
+        actionlimitLine->setText(QCoreApplication::translate("MainWindow", "limitLine", nullptr));
+#if QT_CONFIG(tooltip)
+        actionlimitLine->setToolTip(QCoreApplication::translate("MainWindow", "Gi\341\273\233i h\341\272\241n \304\221i\341\273\203m \304\221\341\272\247u cu\341\273\221i c\341\273\247a \304\221\306\260\341\273\235ng line", nullptr));
+#endif // QT_CONFIG(tooltip)
+        actionDraw->setText(QCoreApplication::translate("MainWindow", "Draw", nullptr));
+#if QT_CONFIG(tooltip)
+        actionDraw->setToolTip(QCoreApplication::translate("MainWindow", "V\341\272\275 \304\221\306\260\341\273\235ng \304\221\341\272\267c t\303\255nh \304\221\341\273\203 ph\341\272\247n m\341\273\201m nh\341\272\255n bi\341\272\277t", nullptr));
+#endif // QT_CONFIG(tooltip)
+        label_5->setText(QCoreApplication::translate("MainWindow", "+/- l\306\260\341\273\243ng", nullptr));
+        label_6->setText(QCoreApplication::translate("MainWindow", "+/- th\341\273\235i gian", nullptr));
+        change->setText(QCoreApplication::translate("MainWindow", "\304\220i\341\273\201u ch\341\273\211nh", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y th\303\241ng", nullptr));
         prevDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y tr\306\260\341\273\233c", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "T\303\252n tr\341\272\241m", nullptr));
+        nextDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y ti\341\272\277p", nullptr));
         label_4->setText(QCoreApplication::translate("MainWindow", "M\303\243 tr\341\272\241m", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "T\303\252n tr\341\272\241m", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "M\303\243 t\303\240i li\341\273\207u", nullptr));
         digitalize->setText(QCoreApplication::translate("MainWindow", "T\341\272\241o b\303\241o c\303\241o ", nullptr));
         save->setText(QCoreApplication::translate("MainWindow", "L\306\260u k\341\272\277t qu\341\272\243", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));

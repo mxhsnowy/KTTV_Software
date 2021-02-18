@@ -116,6 +116,79 @@
        </widget>
       </item>
       <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="2" column="0">
+         <widget class="QSpinBox" name="timeUD">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="minimum">
+           <number>-1000</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="levelUD">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="minimum">
+           <number>-1000</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="label_5">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>+/- lượng</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>+/- thời gian</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="change">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Điều chỉnh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QGridLayout" name="gridLayout">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
@@ -126,58 +199,7 @@
         <property name="verticalSpacing">
          <number>2</number>
         </property>
-        <item row="4" column="1">
-         <widget class="QPushButton" name="nextDay">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Ngày tiếp</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="daychart">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Mã tài liệu</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
@@ -189,34 +211,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="IDchart">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="stationBox">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="editable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="5" column="0">
          <widget class="QPushButton" name="prevDay">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -234,19 +229,52 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_2">
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="IDchart">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="nextDay">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>Tên trạm</string>
+           <string>Ngày tiếp</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="1">
+         <widget class="QComboBox" name="stationID">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
          <widget class="QLabel" name="label_4">
           <property name="font">
            <font>
@@ -258,8 +286,20 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Tên trạm</string>
+          </property>
+         </widget>
+        </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="stationID">
+         <widget class="QComboBox" name="stationBox">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -267,6 +307,39 @@
           </property>
           <property name="editable">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="daychart">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Mã tài liệu</string>
           </property>
          </widget>
         </item>
@@ -318,13 +391,24 @@
    </attribute>
    <addaction name="actionOpenFolder"/>
    <addaction name="separator"/>
-   <addaction name="actionrotateAndCrop"/>
-   <addaction name="actionZoom"/>
+   <addaction name="actionRotateBack"/>
+   <addaction name="actionRotate"/>
    <addaction name="actionCutGrid"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoom"/>
    <addaction name="actionSetting"/>
-   <addaction name="actionHelp"/>
+   <addaction name="actionMarking"/>
+   <addaction name="actionlimitLine"/>
+   <addaction name="actionDraw"/>
    <addaction name="actionQuit"/>
    <addaction name="separator"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
   </widget>
   <action name="actionOpenFolder">
    <property name="icon">
@@ -390,48 +474,107 @@
     <string>Chỉnh sửa tham số đồ thị</string>
    </property>
   </action>
+  <action name="actionRotate">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/imgRotate.png</normaloff>:/icon/icons/imgRotate.png</iconset>
+   </property>
+   <property name="text">
+    <string>autorotating</string>
+   </property>
+   <property name="toolTip">
+    <string>Xoay ảnh theo chiều kim đồng hồ</string>
+   </property>
+  </action>
+  <action name="actionMarking">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/curveoff.png</normaloff>
+     <normalon>:/icon/icons/clicking.png</normalon>:/icon/icons/curveoff.png</iconset>
+   </property>
+   <property name="text">
+    <string>Marking</string>
+   </property>
+   <property name="toolTip">
+    <string>Đánh dấu 3 điểm thuộc đồ thị cong</string>
+   </property>
+  </action>
   <action name="actionCutGrid">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Icon.qrc">
-     <normaloff>:/icon/icons/cropGrid.png</normaloff>
-     <normalon>:/icon/icons/rectcrop.png</normalon>:/icon/icons/cropGrid.png</iconset>
+     <normaloff>:/icon/icons/handCrop.png</normaloff>
+     <normalon>:/icon/icons/rectcrop.png</normalon>:/icon/icons/handCrop.png</iconset>
    </property>
    <property name="text">
     <string>CutGrid</string>
    </property>
    <property name="toolTip">
-    <string>Khoanh vùng tính toán</string>
+    <string>Khoanh vùng đồ thị</string>
    </property>
   </action>
-  <action name="actiondrawMask">
+  <action name="actionRotateBack">
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/imgRotateBack.png</normaloff>:/icon/icons/imgRotateBack.png</iconset>
+   </property>
+   <property name="text">
+    <string>RotateBack</string>
+   </property>
+   <property name="toolTip">
+    <string>Xoay ảnh ngược chiều kim đồng hồ</string>
+   </property>
+  </action>
+  <action name="actionPicking_Points">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/addPoints.png</normaloff>:/icon/icons/addPoints.png</iconset>
+   </property>
+   <property name="text">
+    <string>Picking Points</string>
+   </property>
+   <property name="toolTip">
+    <string>Thêm điểm cần trong bảng</string>
+   </property>
+  </action>
+  <action name="actionlimitLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icon.qrc">
+     <normaloff>:/icon/icons/limitLine.png</normaloff>
+     <normalon>:/icon/icons/clicking.png</normalon>:/icon/icons/limitLine.png</iconset>
+   </property>
+   <property name="text">
+    <string>limitLine</string>
+   </property>
+   <property name="toolTip">
+    <string>Giới hạn điểm đầu cuối của đường line</string>
+   </property>
+  </action>
+  <action name="actionDraw">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="Icon.qrc">
      <normaloff>:/icon/icons/draw.png</normaloff>
-     <normalon>:/icon/icons/drawEnabled.png</normalon>:/icon/icons/draw.png</iconset>
+     <normalon>:/icon/icons/drawing.png</normalon>:/icon/icons/draw.png</iconset>
    </property>
    <property name="text">
-    <string>drawMask</string>
+    <string>Draw</string>
    </property>
    <property name="toolTip">
-    <string>Vẽ đường đặc tính thay thế</string>
-   </property>
-  </action>
-  <action name="actionrotateAndCrop">
-   <property name="icon">
-    <iconset resource="Icon.qrc">
-     <normaloff>:/icon/icons/rotateandcrop.png</normaloff>:/icon/icons/rotateandcrop.png</iconset>
-   </property>
-   <property name="text">
-    <string>rotateAndCrop</string>
-   </property>
-   <property name="toolTip">
-    <string>Cắt và xoay ảnh tự động</string>
+    <string>Vẽ đường đặc tính để phần mềm nhận biết</string>
    </property>
   </action>
  </widget>

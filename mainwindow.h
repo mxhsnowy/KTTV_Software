@@ -24,6 +24,7 @@
 #include <QTextEdit>
 #include <QGraphicsPixmapItem>
 #include <QProgressDialog>
+#include <QVector>
 #include "input.h"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
@@ -31,6 +32,7 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,73 +40,98 @@ class MainWindow : public QMainWindow
 public:
     void addStringToFile(const QString &name, const QString &id);
     QStringList loadTxtToStringList(const QString &txtpath);
-    void changeTable();
-    void lineDetection();
     void removeTableRows();
-    int timeToCols();
-    int levelToRows();
-    void drawPointDebug(std::vector<int> xP, std::vector<double> yP, const QColor &color);
-    void drawPointDebug(std::vector<double> xP, std::vector<double> yP, const QColor &color);
-    void drawPointDebug(std::vector<int> xP, std::vector<int> yP, const QColor &color);
+
+    int timeToCols(QTime startTime, double timeSpace, QTime endTime, int days);
+    int levelToRows(int startLevel, double levelExtract, int endLevel);
+    int totalTimeofLineinSecs(QTime startTime, QTime endtime, int days);
+    void showImage(const QImage &inputImage);
+
     void detectDays();
     void changeParabol();
-    int first(std::vector<int>, int n, int x);
-    int last(std::vector<int>, int n, int x);
+
+    bool isWithin(cv::Point p);
     QString getLitters(double, double);
-    void extractData();
-    void unique();
+
+    void extractDataFromLine(const QImage& inputMask);
+
     void readJson(QString);
     QImage createImageWithOverlay(const QImage& baseImage, const QImage& overlayImage);
     void pointToValue(double x, double y);
 
-    std::vector<int> removeDuplicate(std::vector<int> uniqueVector, std::vector<int> rawVector, std::vector<int> findVector);
-    std::vector<double> removeDuplicate(std::vector<int> uniqueVector, std::vector<int> rawVector, std::vector<double> findVector);
-    std::vector<int> vectorThreshold(std::vector<int> input, QTime threshTime, int day);
-    void detectRainOver(int x, int y, int w, int h);
+
+    int detectRainOver(int x, int y, int w, int h);
+
 
     int parabolGrid(int mousePos, double parabolPos, int nx);
-    void cropImage();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 protected:
-
     bool eventFilter(QObject *object, QEvent *event);
 
 public slots:
+
+
+    void rotForward();
+    void rotBackward();
+
+    void receivePoint(QPointF);
+    void addingRpPoint(QPointF);
+    void addingRectPoint(QPointF);
+    void changeStartEndPoint(QPointF);
+
     void NameToID(int);
     void IDToName(int);
-    void changeSetup();
+    void changeParams(QTime, int, QTime, double, double, double, int);
     void saveToTxt();
+
     void switchMode(int);
+    void statusMessage(bool, const QString& message);
     void exportNow();
+    void changeTable();
     void nextDay();
     void prevDay();
-    void enableRotateandCrop();
-    QImage RotateAndCrop(QImage);
-    QImage cropOnly(QImage);
-    void mouseDrawLineToMask(const QVector<QPointF> &input);
+
+    QImage cropping(QImage, int, int, int, int, bool);
+    QImage rotating(QImage, double);
+    QImage performDilation(const QImage& input);
+
+    void addToMask(const QVector<QPoint>& pointsVec);
+    void createMask(bool);
+    void calculateParabolafrom3points(QPointF x1, QPointF x2, QPointF x3);
     void getNewVariables(int xmin, int ymin, int xmax, int ymax);
-    void cropGridToggled(bool enabled);
-    void zoomToggled(bool enabled);
-    void drawToggled(bool enabled);
+    void calculateParabol(QVector<QPointF>);
     void quitApp();
     void openFolder();
     void itemClicked(QListWidgetItem *item);
     void inputDialog();
 
+
 private:
+    std::vector<cv::Point> locations;
+    QSize gridSize;
+    QSize iconSize;
+    QVector<QPointF> neededPoints;
+    QVector<QPointF> rectPoints;
+    QVector<QPointF> limitPoints;
     QWidget *spacer = new QWidget;
-    bool cropped = false;
+
+    bool manualCropped = false;
+    bool autoCropped = false;
+    bool autoRotated = false;
+    bool pickingPoints = false;
+    bool getNewStartEnd = false;
+
     bool opened;
     QTime startTime;
     QTime endTime;
     int days;
     double startLevel;
     double endLevel;
-    int timeSpace;
-    double levelSpace;
-    Input *dialog;
+    int timeExtract;
+    double levelExtract;
     QPixmap pixmap;
+
     QLabel *modeLabel = new QLabel;
     QLabel *timeLabel = new QLabel;
     QLabel *colNum = new QLabel;
@@ -145,10 +172,9 @@ private:
     int sizeWidth;
     int numCols;
     int numRows;
-    double gridWidth;
-    double gridHeight;
+    
 
-    QSize iconSize;
+    
     int maskCount = 0;
     // Mask for detecting
     QImage cropMaskRain;
@@ -172,28 +198,28 @@ private:
     QImage mask;
 
     int dayCount = 0;
-
-    int overFlow=0;
-    int total;
-    QString chartType = "am";
-    bool ev;
-
+    int chartType = 0;
     QGraphicsScene *scene = new QGraphicsScene;
     QList<QString> colNames;
     QList<QString> bubble;
 
-    double angle;
+    double totalAngle = 0;
+    double angle = 1;
     double cos;
     double sin;
-    int x_min;
+
+    int x_mincut, x_maxcut;
+
+    int x_minc;
+    int x_maxc;
     int y_min;
-    int x_max;
     int y_max;
     int column;
-    double ratio;
-    int bias = 0;
-    double addUp = 0;
 
+    double ratio;
+    double aPara = 0;
+    double bPara = 0;
+    int gridHeight;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

@@ -7,6 +7,33 @@
 #include "opencv2/imgproc/types_c.h"
 namespace cvert
 {
+inline QImage MatToQImage(const cv::Mat& mat)
+{
+    // 8-bits unsigned, NO. OF CHANNELS=1
+    if(mat.type()==CV_8UC1)
+    {
+        // Set the color table (used to translate colour indexes to qRgb values)
+        QVector<QRgb> colorTable;
+        for (int i=0; i<256; i++)
+            colorTable.push_back(qRgb(i,i,i));
+        // Copy input Mat
+        const uchar *qImageBuffer = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage img(qImageBuffer, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
+        img.setColorTable(colorTable);
+        return img;
+    }
+    // 8-bits unsigned, NO. OF CHANNELS=3
+    if(mat.type()==CV_8UC3)
+    {
+        // Copy input Mat
+        const uchar *qImageBuffer = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage img(qImageBuffer, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        return img.rgbSwapped();
+    }
+    return QImage();
+}
     inline QImage  cvMatToQImage(const cv::Mat &inMat)
     {
         cv::cvtColor(inMat, inMat, cv::COLOR_BGR2RGB);
@@ -43,32 +70,32 @@ namespace cvert
 //                QImage::Format_Grayscale8);
 
 //            return image;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+//#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
             QImage image( inMat.data,
                           inMat.cols, inMat.rows,
                           static_cast<int>(inMat.step),
                           QImage::Format_Grayscale8 );
-#else
-            static QVector<QRgb>  sColorTable;
+//#else
+//            static QVector<QRgb>  sColorTable;
 
-            // only create our color table the first time
-            if ( sColorTable.isEmpty() )
-            {
-               sColorTable.resize( 256 );
+//            // only create our color table the first time
+//            if ( sColorTable.isEmpty() )
+//            {
+//               sColorTable.resize( 256 );
 
-               for ( int i = 0; i < 256; ++i )
-               {
-                  sColorTable[i] = qRgb( i, i, i );
-               }
-            }
+//               for ( int i = 0; i < 256; ++i )
+//               {
+//                  sColorTable[i] = qRgb( i, i, i );
+//               }
+//            }
 
-            QImage image( inMat.data,
-                          inMat.cols, inMat.rows,
-                          static_cast<int>(inMat.step),
-                          QImage::Format_Indexed8 );
+//            QImage image( inMat.data,
+//                          inMat.cols, inMat.rows,
+//                          static_cast<int>(inMat.step),
+//                          QImage::Format_Indexed8 );
 
-            image.setColorTable( sColorTable );
-#endif
+//            image.setColorTable( sColorTable );
+//#endif
             return image;
         }
 

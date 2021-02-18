@@ -29,7 +29,8 @@ HEADERS += \
     linedetection.h \
     mainwindow.h \
     mygraphicsitem.h \
-    mygraphicsview.h
+    mygraphicsview.h \
+    somefuntions.h
 
 FORMS += \
     input.ui \
@@ -48,4 +49,5 @@ win32:CONFIG(release, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/instal
 else:win32:CONFIG(debug, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/install/x64/vc15/lib/" -lopencv_world420d
 
 INCLUDEPATH += "E:/opencv 4.2.0/buildx64/install/include"
+
 DEPENDPATH += "E:/opencv 4.2.0/buildx64/install/include"
