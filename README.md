@@ -1,0 +1,1 @@
+# KTTV software used to extract results from barometer chart
