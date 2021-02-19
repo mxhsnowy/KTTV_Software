@@ -27,7 +27,7 @@ vector<size_t> sort_indexes(const vector<T> &v) {
   return idx;
 }
 
-int first(std::vector<int> input, int n, int x)
+int first(const std::vector<int> &input, int n, int x)
 {
 
     // search space is arr[low..high]
@@ -64,7 +64,7 @@ int first(std::vector<int> input, int n, int x)
         // return the leftmost index or -1 if the element is not found
         return result;
 }
-int last(std::vector<int> input, int n, int x)
+int last(const std::vector<int> &input, int n, int x)
 {
 
     // search space is A[low..high]
@@ -131,7 +131,7 @@ template <typename T1, typename T2> QImage drawRectDebug(QImage image, std::vect
     painter.end();
     return image;
 }
-template <typename T> std::vector<T> removeDuplicate(std::vector<T> uniqueVector, std::vector<T> rawVector, std::vector<T> findVector){
+template <typename T> std::vector<T> removeDuplicate(const std::vector<T> &uniqueVector, const std::vector<T> &rawVector, const std::vector<T> &findVector){
     int index;
 
     std::vector<T> forward;

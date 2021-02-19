@@ -59,19 +59,19 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect actions from MW to the Graphics View
     connect(ui->actionZoom, &QAction::triggered, ui->Mask, &MyGraphicsView::enableZoom);
     connect(ui->actionZoom, &QAction::triggered,
-            [=](bool triggered){statusMessage(triggered, "Zoom to nhỏ bằng con lăn chuột.");});
+            [&](bool triggered){statusMessage(triggered, "Zoom to nhỏ bằng con lăn chuột.");});
 
     connect(ui->actionMarking, &QAction::triggered, ui->Mask, &MyGraphicsView::enablePickPoints);
     connect(ui->actionMarking, &QAction::triggered,
-            [=](bool triggered){statusMessage(triggered, "Đánh dấu 3 điểm mà parabol đi qua.");});
+            [&](bool triggered){statusMessage(triggered, "Đánh dấu 3 điểm mà parabol đi qua.");});
 
     connect(ui->actionCutGrid, &QAction::triggered, ui->Mask, &MyGraphicsView::enableCutGrid);
     connect(ui->actionCutGrid, &QAction::triggered,
-            [=](bool triggered){statusMessage(triggered, "Đánh dấu 2 điểm trái trên và phải dưới để khoanh vùng đồ thị.");});
+            [&](bool triggered){statusMessage(triggered, "Đánh dấu 2 điểm trái trên và phải dưới để khoanh vùng đồ thị.");});
 
     connect(ui->actionlimitLine, &QAction::triggered, ui->Mask, &MyGraphicsView::enableLimitLine);
     connect(ui->actionlimitLine, &QAction::triggered,
-            [=](bool triggered){statusMessage(triggered, "Đánh dấu 2 điểm đầu cuối của đường line để giới hạn khoảng tính toán.");});
+            [&](bool triggered){statusMessage(triggered, "Đánh dấu 2 điểm đầu cuối của đường line để giới hạn khoảng tính toán.");});
 
     connect(ui->actionDraw, &QAction::triggered, ui->Mask, &MyGraphicsView::enableDraw);
     connect(ui->actionDraw, &QAction::triggered, this, &MainWindow::createMask);
@@ -123,17 +123,28 @@ void MainWindow::statusMessage(bool is_on, const QString& message){
 }
 void MainWindow::createMask(bool is_on){
     if(is_on){
-        mask = QImage(image.width(), image.height(), image.format());
-        mask.fill(Qt::black);
+        if(mask.isNull()){
+            qDebug()<<"Create new mask:"<<"\n";
+            mask = QImage(image.width(), image.height(), image.format());
+            mask.fill(Qt::black);
+        }
         showImage(image);
     }
 //    else{
-//        QImage resImage = createImageWithOverlay(image, mask);
-//        showImage(mask);
+        QImage maskShow = performDilation(mask);
+        QImage resImg = createImageWithOverlay(image, maskShow);
+        showImage(resImg);
 //    }
+
 }
 
 void MainWindow::addToMask(const QVector<QPoint>& pointsVec){
+
+    if(mask.format() == QImage::Format_Indexed8){
+//        qDebug()<<mask.format()<<"\n";
+        mask = mask.convertToFormat(QImage::Format_RGB888);
+//        qDebug()<<mask.format()<<"\n";
+    }
     QPainter painter(&mask);
     painter.setPen(QPen(Qt::white, 1));
     for(int i = 1; i<pointsVec.size(); i++){
@@ -188,9 +199,10 @@ QStringList MainWindow::loadTxtToStringList(const QString &txtpath){
 void MainWindow::addingRectPoint(QPointF point){
     rectPoints.append(point);
     if(rectPoints.size() == 2){
-        getNewVariables(rectPoints[0].x(),rectPoints[0].y(),
-                        rectPoints[1].x()-rectPoints[0].x(),
-                        rectPoints[1].y()-rectPoints[0].y());
+        getNewVariables(rectPoints[0].x(),
+                        rectPoints[0].y(),
+                        rectPoints[1].x(),
+                        rectPoints[1].y());
         rectPoints = {};
 
     }
@@ -213,21 +225,22 @@ void MainWindow::changeStartEndPoint(QPointF point){
 }
 
 
-void MainWindow::getNewVariables(int xmin, int ymin, int w, int h){
+void MainWindow::getNewVariables(int xmin, int ymin, int xmax, int ymax){
     x_minc = xmin;
-    x_maxc = xmin+w;
+    x_maxc = xmax;
     y_min = ymin;
-    y_max = ymin+h;
+    y_max = ymax;
     ui->actionCutGrid->trigger();
     QMessageBox msgBox;
     autoCropped = true;
     msgBox.setText("Đã khoanh vùng đồ thị.");
     msgBox.setIcon(QMessageBox::Information);
+    gridHeight = ymax-ymin;
     int ret = msgBox.exec();
     if(ret != 0){
-        image = cropping(image, xmin, ymin, w, h, true);
+        image = cropping(image, xmin, ymin, xmax-xmin, ymax-ymin, true);
         if(!mask.isNull()){
-            mask = cropping(mask, xmin, ymin, w, h, false);
+            mask = cropping(mask, xmin, ymin, xmax-xmin, ymax-ymin, false);
             QImage resultImg = createImageWithOverlay(image, mask);
             showImage(resultImg);
         }
@@ -551,6 +564,7 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
     std::vector<int>::iterator it;
     std::vector<int> indexFound;
     std::vector<int> missingIndexes;
+    //! Cartesian axis
     if(chartType == 4 || chartType == 2){
         std::vector<int> locationsX;
         for (cv::Point p: locations) {
@@ -559,7 +573,7 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
 
         while(value<x_maxl){
             value = x_minl + blockWidthPx * j;
-            qDebug()<<value<<"\n";
+
             it = std::find(locationsX.begin(), locationsX.end(), value);
             if (it != locationsX.end()){
                 indexFound.push_back(it - locationsX.begin());
@@ -751,16 +765,7 @@ void MainWindow::readJson(QString jsonPath){
 }
 bool MainWindow::eventFilter(QObject *object, QEvent *event)
 {
-//    if (event->type() ==  QEvent::GraphicsSceneMouseMove ) {
-//       QGraphicsSceneMouseEvent *mouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
-//       QPointF img_coord_pt = mouseEvent->scenePos();
-//       double x = img_coord_pt.x();
-//       double y = img_coord_pt.y();
-//       pointToValue(x, y);
-//       ui->Mask->toolTip();
-//       ui->Mask->setToolTip(QString("%1 %2\n%3 %4").arg(bubble[1]).arg(pixelLitter).arg(bubble[0]).arg(time.toString("HH:mm")));
-//       return true;
-//     }
+
     if(event->type() == QEvent::KeyPress){
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
         if(keyEvent->key() == Qt::Key_Delete){
@@ -785,6 +790,19 @@ void MainWindow::nextDay(){
     maskPath = itemPath.replace(jsonFolder, lineFolder);
     maskPath.insert(maskPath.size() - 4, QString("_%1").arg(QString::number(dayCount)));
     maskPath.replace(".jpg", ".png");
+    QString filename = QFileInfo(maskPath).fileName();
+    if(errorImages.contains(filename)){
+        QMessageBox msgBox;
+        msgBox.setText("Đồ thị ngày này có thể bị lỗi, bạn muốn tiếp tục chứ?");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        if(msgBox.exec()==QMessageBox::No){
+            dayCount--;
+            ui->daychart->setText(QString::number(dayCount));
+            return;
+        }
+    }
     mask.load(maskPath);
     if(!mask.isNull()){
         mask = rotating(mask, totalAngle);
@@ -815,6 +833,19 @@ void MainWindow::prevDay(){
     maskPath = itemPath.replace(jsonFolder, lineFolder);
     maskPath.insert(maskPath.size() - 4, QString("_%1").arg(QString::number(dayCount)));
     maskPath.replace(".jpg", ".png");
+    QString filename = QFileInfo(maskPath).fileName();
+    if(errorImages.contains(filename)){
+        QMessageBox msgBox;
+        msgBox.setText("Đồ thị ngày này có thể bị lỗi, bạn muốn tiếp tục chứ?");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        if(msgBox.exec()==QMessageBox::No){
+            dayCount++;
+            ui->daychart->setText(QString::number(dayCount));
+            return;
+        }
+    }
     mask.load(maskPath);
     if(!mask.isNull()){
         mask = rotating(mask, totalAngle);
@@ -948,6 +979,9 @@ void MainWindow::openFolder(){
         QDir().mkdir(exportDir);
         exportImgs = Dir.replace("Thu muc bao cao", "Anh da so hoa");
         exportImgs.remove(".jpg");
+        QString errorDir = Dir.replace("Anh da so hoa", "error_image");
+        errorImages = QDir(errorDir).entryList(QStringList()<<"*.jpg"<<"*.png", QDir::Files);
+
         QDir().mkdir(Dir);
         ui->showFolder->clear();
         QIcon icon;

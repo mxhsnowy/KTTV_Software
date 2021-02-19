@@ -60,53 +60,55 @@ void MyGraphicsView::keyReleaseEvent(QKeyEvent *event){
     }
 }
 void MyGraphicsView::mousePressEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        if(grid){
+            rad = this->scene()->width()*0.004;
+            QPointF scenePos = mapToScene(event->pos());
+            this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
+                                      rad, rad, QPen(), QBrush(Qt::blue));
 
-    if(grid){
-        rad = this->scene()->width()*0.004;
-        QPointF scenePos = mapToScene(event->pos());
-        this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
-                                  rad, rad, QPen(), QBrush(Qt::blue));
+            emit passRectPoint(scenePos);
+    //        rubberBandRect.setTopLeft(this->mapToScene(startPoint));
+    //        rubberBand->setGeometry(QRect(startPoint, QSize()));
+    //        rubberBand->show();
+    //        setCursor(Qt::CrossCursor);
+        }
 
-        emit passRectPoint(scenePos);
-//        rubberBandRect.setTopLeft(this->mapToScene(startPoint));
-//        rubberBand->setGeometry(QRect(startPoint, QSize()));
-//        rubberBand->show();
-//        setCursor(Qt::CrossCursor);
+
+        else if (pickingPoints){
+            rad = this->scene()->width()*0.004;
+            QPointF scenePos = mapToScene(event->pos());
+            this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
+                                      rad, rad, QPen(), QBrush(Qt::red));
+            emit passPoint(scenePos);
+        }
+        else if(addingPoints){
+            rad = this->scene()->width()*0.004;
+            QPointF scenePos = mapToScene(event->pos());
+            this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
+                                      rad, rad, QPen(), QBrush(Qt::green));
+
+            emit passAddingPoint(scenePos);
+        }
+        else if(limitLine){
+            rad = this->scene()->width()*0.004;
+            QPointF scenePos = mapToScene(event->pos());
+            this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
+                                      rad, rad, QPen(), QBrush(Qt::cyan));
+
+            emit passLimitPoint(scenePos);
+        }
+        else if(draw){
+            drewPoints.append(mapToScene(event->pos()).toPoint());
+            drawing = true;
+        }
     }
-
     else if (event->button() == Qt::RightButton) {
         drag = 1;
         panStartX = event->x();
         panStartY = event->y();
         setCursor(Qt::ClosedHandCursor);
         event->accept();
-    }
-    else if (pickingPoints){
-        rad = this->scene()->width()*0.004;
-        QPointF scenePos = mapToScene(event->pos());
-        this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
-                                  rad, rad, QPen(), QBrush(Qt::red));
-        emit passPoint(scenePos);
-    }
-    else if(addingPoints){
-        rad = this->scene()->width()*0.004;
-        QPointF scenePos = mapToScene(event->pos());
-        this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
-                                  rad, rad, QPen(), QBrush(Qt::green));
-
-        emit passAddingPoint(scenePos);
-    }
-    else if(limitLine){
-        rad = this->scene()->width()*0.004;
-        QPointF scenePos = mapToScene(event->pos());
-        this->scene()->addEllipse(scenePos.x()-rad/2, scenePos.y()-rad/2,
-                                  rad, rad, QPen(), QBrush(Qt::cyan));
-
-        emit passLimitPoint(scenePos);
-    }
-    else if(draw){
-        drewPoints.append(mapToScene(event->pos()).toPoint());
-        drawing = true;
     }
     event->ignore();
 }

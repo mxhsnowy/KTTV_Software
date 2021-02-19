@@ -115,6 +115,7 @@ private:
     QVector<QPointF> rectPoints;
     QVector<QPointF> limitPoints;
     QWidget *spacer = new QWidget;
+    QStringList errorImages;
 
     bool manualCropped = false;
     bool autoCropped = false;
