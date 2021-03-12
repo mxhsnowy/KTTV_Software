@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionDraw, &QAction::triggered, ui->Mask, &MyGraphicsView::enableDraw);
     connect(ui->actionDraw, &QAction::triggered, this, &MainWindow::createMask);
     connect(ui->actionDraw, &QAction::triggered,
-            [=](bool triggered){statusMessage(triggered, "Vẽ đường đặc tính cho biểu đồ.");});
+            [&](bool triggered){statusMessage(triggered, "Vẽ đường đặc tính cho biểu đồ.");});
 
     // Opening a folder
     connect(ui->actionOpenFolder, &QAction::triggered, this, &MainWindow::openFolder);
@@ -87,20 +87,20 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->digitalize, &QPushButton::clicked, this, &MainWindow::exportNow);
     connect(ui->actionPicking_Points, &QAction::triggered, ui->Mask, &MyGraphicsView::addReportedPoint);
     connect(ui->actionPicking_Points, &QAction::triggered, ui->statusBar,
-            [=](){ui->statusBar->showMessage("Chọn thêm điểm trên đồ thị");});
+            [&](){ui->statusBar->showMessage("Chọn thêm điểm trên đồ thị");});
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::quitApp);
-    connect(ui->nextDay, &QPushButton::clicked, this, &MainWindow::nextDay);
-    connect(ui->prevDay, &QPushButton::clicked, this, &MainWindow::prevDay);
+    connect(ui->nextDay, &QPushButton::clicked, [&](){moveDay(true);});
+    connect(ui->prevDay, &QPushButton::clicked, [&](){moveDay(false);});
     connect(ui->actionSetting, &QAction::triggered, this, &MainWindow::inputDialog);
     connect(modeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-        [=](int index){ switchMode(index); });
+        [&](int index){ switchMode(index); });
     connect(ui->stationBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            [=](int index){ NameToID(index); });
+            [&](int index){ NameToID(index); });
     connect(ui->stationID, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                    [=](int index){ IDToName(index); });
-    connect(ui->actionRotate, &QAction::triggered, this, &MainWindow::rotForward);
-    connect(ui->actionRotateBack, &QAction::triggered, this, &MainWindow::rotBackward);
+                    [&](int index){ IDToName(index); });
+    connect(ui->actionRotate, &QAction::triggered, [&](){rotateClick(true);});
+    connect(ui->actionRotateBack, &QAction::triggered, [&](){rotateClick(false);});
 
     connect(ui->change, &QPushButton::clicked, this, &MainWindow::changeTable);
     connect(ui->Mask, &MyGraphicsView::passPoint, this, &MainWindow::receivePoint);
@@ -154,23 +154,24 @@ void MainWindow::addToMask(const QVector<QPoint>& pointsVec){
 }
 
 void MainWindow::changeTable(){
-    int timeUD = ui->timeUD->value();
-    int valUD = ui->levelUD->value();
+    double timeUD = ui->timeUD->value();
+    double valUD = ui->levelUD->value();
     QTableWidgetItem *itemTime;
     QTableWidgetItem *itemLevel;
     QTime t;
-    int val;
+    double val;
     for(int i = 0; i<ui->dataView->rowCount(); i++){
         itemTime = ui->dataView->item(i, 0);
         itemLevel = ui->dataView->item(i, 1);
         t = QTime::fromString(itemTime->text(), "hh:mm");
-
-        val = itemLevel->text().toInt();
         t = t.addSecs(60*timeUD);
-
-        val += valUD;
         itemTime->setText(t.toString("hh:mm"));
-        itemLevel->setText(QString::number(val));
+        if(!itemLevel){
+            continue;
+        }
+        val = itemLevel->text().toDouble();
+        val += valUD;
+        itemLevel->setText(QString::number(val, 'f', decimalDigit));
     }
 
 }
@@ -199,7 +200,7 @@ QStringList MainWindow::loadTxtToStringList(const QString &txtpath){
 void MainWindow::addingRectPoint(QPointF point){
     rectPoints.append(point);
     if(rectPoints.size() == 2){
-        getNewVariables(rectPoints[0].x(),
+        getNewCutRect(rectPoints[0].x(),
                         rectPoints[0].y(),
                         rectPoints[1].x(),
                         rectPoints[1].y());
@@ -225,7 +226,7 @@ void MainWindow::changeStartEndPoint(QPointF point){
 }
 
 
-void MainWindow::getNewVariables(int xmin, int ymin, int xmax, int ymax){
+void MainWindow::getNewCutRect(int xmin, int ymin, int xmax, int ymax){
     x_minc = xmin;
     x_maxc = xmax;
     y_min = ymin;
@@ -268,7 +269,7 @@ void MainWindow::receivePoint(QPointF point){
     if(neededPoints.size() == 3){
        ui->actionMarking->trigger();
        calculateParabol(neededPoints);
-       neededPoints = {};
+
        QMessageBox msgBox;
        msgBox.setText("Bạn đã chọn xong 3 điểm quan trọng của parabol");
        msgBox.exec();
@@ -321,7 +322,7 @@ void MainWindow::calculateParabol(QVector<QPointF> pointsVt){
     if(pointsVt.size() != 3){
         return;
     }
-    // Top parabol, mid parabol, bot para
+    // Top parabol, mid parabol, bot getNewVariablespara
     gridHeight = qAbs(pointsVt[2].y() - pointsVt[0].y());
     // image = image.copy(QRect(0, pointsVt[0].y(), image.width(), gridHeight)
     y_min = pointsVt[0].y();
@@ -331,8 +332,8 @@ void MainWindow::calculateParabol(QVector<QPointF> pointsVt){
                                  QPointF(pointsVt[2].y(), pointsVt[2].x()));
 }
 
-int MainWindow::timeToCols(QTime startTime, double timeExtractinMin, QTime endTime, int days){
-    int diff = startTime.secsTo(endTime) + 86400*days;
+int MainWindow::timeToCols(QTime start_time, double timeExtractinMin, QTime end_time, int days){
+    int diff = start_time.secsTo(end_time) + 86400*days;
     int numcols = diff/(timeExtractinMin*60);
     return numcols;
 }
@@ -345,7 +346,7 @@ int MainWindow::levelToRows(int startLevel, double levelExtract, int endLevel){
 
 void MainWindow::changeParams(QTime start_time, int time_extract, QTime end_time,
                               double start_level, double level_extract, double end_level,
-                              int day){
+                              int day, bool keepParabol, bool keepStartEndPoints){
     startTime = start_time;
     timeExtract = time_extract;
     endTime = end_time;
@@ -353,6 +354,8 @@ void MainWindow::changeParams(QTime start_time, int time_extract, QTime end_time
     levelExtract = level_extract;
     endLevel = end_level;
     days = day;
+    keepPara = keepParabol;
+    keepStartEnd = keepStartEndPoints;
     qDebug()<<startTime<<timeExtract<<endTime<<startLevel<<levelExtract<<endLevel<<days;
     numCols = timeToCols(startTime, timeExtract, endTime, days);
     numRows = levelToRows(startLevel, levelExtract, endLevel);
@@ -376,9 +379,13 @@ void MainWindow::changeParams(QTime start_time, int time_extract, QTime end_time
 
 }
 void MainWindow::saveToTxt(){
-    QString exportFile = exportDir+"/"+ui->IDchart->text()+"_"+ui->daychart->text()+".csv";
+
+    QString name = ui->dayInput->text()+"_"+ui->daychart->text()+"_"+QString::number(dayCount);
+    QString exportFile = exportDir+"/"+name+".csv";
+    qDebug()<<exportFile<<"\n";
     QFile f(exportFile);
-    exportFile = exportImgs+"/"+ui->IDchart->text()+"_"+ui->daychart->text()+".jpg";
+
+    exportFile = exportImgs+"/"+name+".jpg";
 
     if (f.open(QFile::WriteOnly | QFile::Truncate) && !image.isNull())
     {
@@ -447,7 +454,7 @@ int MainWindow::detectRainOver(int x, int y, int w, int h){
 
     cv::threshold(cropRain, cropRain, 10, 255, cv::THRESH_BINARY);
     cv::findContours(cropRain, contours, cv::noArray(),
-                     cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+                     cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     overFlow = contours.size();
     overFlow = 100*overFlow;
 
@@ -457,7 +464,6 @@ int MainWindow::detectRainOver(int x, int y, int w, int h){
 void MainWindow::exportNow(){
     if(!mask.isNull()){ 
         extractDataFromLine(mask);
-
     }
     else{
         QMessageBox msgBox;
@@ -473,13 +479,10 @@ void MainWindow::exportNow(){
  * @param inputMask: the input mask which contains the line
  * @param totalTime: the total time that the line stretch
  * @param cutMinutes: given minutes to extract(eg. 15, 60)
- * TODO: Need to review
+ * @todo: Need to review
  */
 bool point_smaller_x(const cv::Point &p1, const cv::Point &p2){
     return p1.x < p2.x;
-}
-bool MainWindow::isWithin(cv::Point p){
-    return x_mincut<p.x<x_maxcut;
 }
 
 QImage MainWindow::performDilation(const QImage& input){
@@ -514,49 +517,50 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
 
     locations = findLineinQImage(inputMask);
     int x_minl, y_minl, x_maxl;
-    qDebug()<<"Size bf:"<<locations.size()<<"\n";
+    int prow = 0;
     if (getNewStartEnd){
         int index;
         int x_min = x_mincut;
         int x_max = x_maxcut;
         std::vector<cv::Point>::iterator itm;
+        // Find the first point
         itm = std::find_if(locations.begin(), locations.end(), [x_min](const cv::Point p){return p.x==x_min;});
         if (itm == locations.end()){
+            // If the most left point not found in line, use the left and right most of the line instead
             auto mmx = std::minmax_element(locations.begin(), locations.end(), point_smaller_x);
             x_minl = mmx.first->x;
             y_minl = mmx.first->y;
             x_maxl = mmx.second->x;
         }
         else{
+            // Set that point as the beginning
             index = itm - locations.begin();
             x_minl = locations[index].x;
             y_minl = locations[index].y;
             itm = std::find_if(locations.begin(), locations.end(), [x_max](const cv::Point p){return p.x==x_max;});
             index = itm - locations.begin();
             x_maxl = locations[index].x;
-
         }
-
-//        locations.erase(std::remove_if(locations.begin(), locations.end(),
-//                                       [x_min, x_max](const cv::Point& p){return x_min<p.x&&p.x<x_max;}),
-//                                       locations.end());
-//        qDebug()<<"Size at:"<<locations.size()<<"\n";
     }
     else{
         auto mmx = std::minmax_element(locations.begin(), locations.end(), point_smaller_x);
         x_minl = mmx.first->x;
         y_minl = mmx.first->y;
         x_maxl = mmx.second->x;
+
+
     }
+    drawALine(image, x_minl, Qt::magenta, 10);
+    drawALine(image, x_maxl, Qt::magenta, 10);
     int xLineWidth = qAbs(x_maxl - x_minl);
-    int blockWidthPx = xLineWidth/numCols;
+    int blockWidthPx = xLineWidth/(numCols-1);
     int blockHeightPx = gridHeight/numRows;
 
 
     std::vector<int> extractedPointAtX;
     std::vector<int> extractedPointAtY;
     std::vector<int> sortedPointAtX;
-    std::vector<int> sortedPointAtY;
+    std::vector<double> sortedPointAtY;
     std::vector<size_t> sortedIndexes;
     std::vector<int> copiedExtractedX;
     int j = 0;
@@ -596,12 +600,19 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         sortedPointAtX.erase(std::unique(sortedPointAtX.begin(), sortedPointAtX.end()), sortedPointAtX.end());
         sortedPointAtY = removeDuplicate(sortedPointAtX, copiedExtractedX, sortedPointAtY);
 //        qDebug()<<sortedPointAtX<<sortedPointAtY<<"\n";
-        image = drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, 50);
+        drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, image.width()*0.002);
 //        std::vector<int> vec_ymin(sortedPointAtX.size(), y_min);
 //        image = drawRectDebug(image, sortedPointAtX, vec_ymin, Qt::red, blockHeightPx*12);
         showImage(image);
+        //!@brief test erase an element in the vector
 
+//        sortedPointAtY.erase(sortedPointAtY.begin()+4);
+//        sortedPointAtX.erase(sortedPointAtX.begin()+4);
+        //! end test
+        qDebug()<<"Done test 1\n";
         missingIndexes = getMissingIndex(sortedPointAtX, blockWidthPx);
+        qDebug()<<"Missing index is"<<missingIndexes<<"\n";
+
         //!Converting to time and level
         for (int i = 0; i < sortedPointAtX.size(); i++) {
             sortedPointAtX[i] = (sortedPointAtX[i]-x_minl)*timeExtract*60/blockWidthPx;
@@ -651,14 +662,14 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
 
 
         std::vector<int> val(parabolXSort.size(), y_min);
-        image = drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, 50);
-//        image = drawPointDebug(image, parabolXSort, val, Qt::black, gridHeight, 50);
-
+        drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, image.width()*pointSize);
+//        //!@brief test erase an element in the vector
 //        parabolXSort.erase(parabolXSort.begin()+4);
 //        sortedPointAtY.erase(sortedPointAtY.begin()+4);
 //        sortedPointAtX.erase(sortedPointAtX.begin()+4);
-
+//        //! end test
         showImage(image);
+
         missingIndexes = getMissingIndex(parabolXSort, blockWidthPx);
 
         for (int i = 0; i < parabolXSort.size(); i++) {
@@ -673,10 +684,11 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
     ui->dataView->clearContents();
     ui->dataView->setRowCount(0);
     if(chartType != 2){
+
         for (int i = 0; i < sortedPointAtX.size(); i++) {
             rptime = startTime.addSecs(sortedPointAtX[i]);
             QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
-            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(sortedPointAtY[i]+startLevel)));
+            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(sortedPointAtY[i]+startLevel, 'f', decimalDigit)));
             ui->dataView->insertRow(ui->dataView->rowCount());
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
@@ -687,16 +699,21 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         int currPoint;
         int diff;
         int overflow;
+
+        prow = 1;
         for (int i = 1; i < sortedPointAtX.size(); i++) {
             rptime = startTime.addSecs(sortedPointAtX[i]);
             currPoint = sortedPointAtY[i];
             prevPoint = sortedPointAtY[i - 1];
             diff = currPoint - prevPoint;
-            //! convert back to detect
+            //! convert back to img coordinates to detect
             overflow = detectRainOver((sortedPointAtX[i-1]*blockWidthPx/(timeExtract*60))+x_minl,
                                        y_min,
                                        blockWidthPx,
-                                       blockHeightPx*12);
+                                       blockHeightPx*15);
+//            if(overflow>0){
+//                qDebug()<<"Overflow at "<<rptime.toString("HH:mm")<<"is"<<overflow<<"\n";
+//            }
             diff = diff + overflow;
             diff = qMax(diff, 0);
             QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
@@ -708,13 +725,15 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
     }
     //! insert missing index
     for(int i:missingIndexes){
-        ui->dataView->insertRow(i);
-        QTableWidgetItem *itembf = ui->dataView->item(i-1, 0);
+        ui->dataView->insertRow(i-prow);
+        QTableWidgetItem *itembf = ui->dataView->item(i-1-prow, 0);
         QTime t = QTime::fromString(itembf->text(), "hh:mm");
+
         t = t.addSecs(timeExtract*60);
         QTableWidgetItem *newitem = new QTableWidgetItem(t.toString("hh:mm"));
+        ui->dataView->setItem(i-prow, 0, newitem);
 
-        ui->dataView->setItem(i, 0, newitem);
+
     }
 }
 
@@ -781,51 +800,16 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-void MainWindow::nextDay(){
-    dayCount++;
-    ui->daychart->setText(QString::number(dayCount));
-    ui->dataView->clearContents();
-    ui->dataView->setRowCount(0);
-    QString maskPath;
-    maskPath = itemPath.replace(jsonFolder, lineFolder);
-    maskPath.insert(maskPath.size() - 4, QString("_%1").arg(QString::number(dayCount)));
-    maskPath.replace(".jpg", ".png");
-    QString filename = QFileInfo(maskPath).fileName();
-    if(errorImages.contains(filename)){
-        QMessageBox msgBox;
-        msgBox.setText("Đồ thị ngày này có thể bị lỗi, bạn muốn tiếp tục chứ?");
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::No);
-        if(msgBox.exec()==QMessageBox::No){
-            dayCount--;
-            ui->daychart->setText(QString::number(dayCount));
-            return;
-        }
-    }
-    mask.load(maskPath);
-    if(!mask.isNull()){
-        mask = rotating(mask, totalAngle);
-        if(autoCropped){
-            mask = cropping(mask, x_minc, y_min, x_maxc-x_minc, y_max-y_min, false);
-        }
-        QImage maskDilate = performDilation(mask);
-        QImage resultImg = createImageWithOverlay(image, maskDilate);
-        scene->clear();
-        showImage(resultImg);
-        ui->statusBar->showMessage("Ngày thứ "+QString::number(dayCount)+" của đồ thị.");
+
+void MainWindow::moveDay(bool isNext){
+    int day = 0;
+    if(isNext){
+        day = 1;
     }
     else {
-        QMessageBox msgBox;
-        msgBox.setText("Đã hết ngày trên đồ thị.");
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.exec();
-        dayCount--;
+        day = -1;
     }
-
-}
-void MainWindow::prevDay(){
-    dayCount--;
+    dayCount += day;
     ui->daychart->setText(QString::number(dayCount));
     ui->dataView->clearContents();
     ui->dataView->setRowCount(0);
@@ -841,15 +825,21 @@ void MainWindow::prevDay(){
         msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::No);
         if(msgBox.exec()==QMessageBox::No){
-            dayCount++;
+            dayCount -= day;
             ui->daychart->setText(QString::number(dayCount));
             return;
         }
     }
     mask.load(maskPath);
     if(!mask.isNull()){
+        qDebug()<<"Mask size before "<<mask.size()<<"\n";
+//        int n_rot = totalAngle/angle;
+//        for (int i = 0;i<n_rot ; i++) {
         mask = rotating(mask, totalAngle);
+//        }
+        qDebug()<<"Mask size after "<<mask.size()<<"\n";
         if(autoCropped){
+
             mask = cropping(mask, x_minc, y_min, x_maxc-x_minc, y_max-y_min, false);
         }
         QImage maskDilate = performDilation(mask);
@@ -861,10 +851,11 @@ void MainWindow::prevDay(){
         msgBox.setText("Đã hết ngày trên đồ thị.");
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
-        dayCount++;
+        dayCount -= day;
+        ui->daychart->setText(QString::number(dayCount));
     }
-
 }
+
 void MainWindow::switchMode(int index){
     opened = 0;
     iconSize = QSize(250, 70);
@@ -874,48 +865,34 @@ void MainWindow::switchMode(int index){
     ui->stationBox->clear();
     ui->stationID->clear();
     ui->stationBox->addItems(stationsName);
-    ui->stationID->addItems(stationsID);    
+    ui->stationID->addItems(stationsID);
+    decimalDigit = 0;
     switch (index) {
     case 0:
         colNames = {"Giờ phút", "Độ ẩm"};
         bubble= {"Giờ phút:", "Độ ẩm:", "ml"};
-        
-        
-
-        days = 1;
         startLevel = 0;
         levelExtract = 2;
         endLevel = 100;
         break;
     case 1:
-        
+        decimalDigit = 1;
         colNames = {"Giờ phút", "Áp suất"};
         bubble = {"Giờ phút:", "Áp suất:", "mb"};
-        
-
-        days = 1;
         startLevel = 946;
         levelExtract = 1;
         endLevel = 1052;
         break;
-    case 2:
-        
+    case 2:    
         colNames = {"Giờ phút", "Chênh lệch mưa"};
         bubble = {"Giờ phút:", "Lượng mưa:", "ml"};
-    
-
-        
-        days = 1;
         startLevel = -5;
         levelExtract = 1;
         endLevel = 105;
         break;
-    case 3:
-        
+    case 3:    
         colNames = {"Giờ phút", "Nhiệt độ"};
         bubble = {"Giờ phút:", "Nhiệt độ:", "°C"};
-     
-
         days = 1;
         startLevel = -150;
         levelExtract = 10;
@@ -925,8 +902,6 @@ void MainWindow::switchMode(int index){
 
         iconSize = QSize(250, 350);
         gridSize = QSize(250, 380);
-        colNames = {"Giờ phút", "Mức nước"};
-        bubble = {"Giờ phút:", "Mức nước:", "ml"};
         ui->showFolder->setIconSize(iconSize);
         ui->showFolder->setGridSize(gridSize);
         ui->stationBox->clear();
@@ -934,7 +909,8 @@ void MainWindow::switchMode(int index){
         ui->stationBox->addItems(stationsNameW);
         ui->stationID->addItems(stationsIDW);
 
-        days = 1;
+        colNames = {"Giờ phút", "Mức nước"};
+        bubble = {"Giờ phút:", "Mức nước:", "ml"};
         startLevel = 47190;
         levelExtract = 0.5;
         endLevel = 47390;
@@ -942,8 +918,11 @@ void MainWindow::switchMode(int index){
     }
     timeExtract = 60;
     ui->dataView->setHorizontalHeaderLabels(colNames);
-    startTime.setHMS(7, 0, 0);
-    endTime.setHMS(7, 0, 0);
+
+    startTime.setHMS(0, 0, 0);
+    endTime.setHMS(0, 0, 0);
+    days = 1;
+
     numCols = timeToCols(startTime, timeExtract, endTime, days);
     numRows = levelToRows(startLevel, levelExtract, endLevel);
     chartType = index;
@@ -960,11 +939,10 @@ void MainWindow::switchMode(int index){
                        arg(days*24).
                        arg(timeExtract).
                        arg(levelExtract).
-//                       arg(addUp).
                        arg(bubble[2]));
-//                       arg(bias));
     ui->statusBar->showMessage("Đang chọn tham số tính toán của "+colNames[1]+", điều chỉnh trước khi chọn thư mục");
 }
+
 void MainWindow::openFolder(){
     QString defaultDir = QDir::homePath();
     QSettings lastDir;
@@ -1035,11 +1013,14 @@ QImage MainWindow::createImageWithOverlay(const QImage& baseImage, const QImage&
 
 void MainWindow::inputDialog(){
     Input *dialog = new Input(this, chartType, opened);
-    opened = 1;
     connect(dialog, &Input::passParams, this, &MainWindow::changeParams);
+    connect(dialog, &Input::passOk, this, &MainWindow::dialogCloseOk);
     dialog->exec();
 }
 
+void MainWindow::dialogCloseOk(bool ok){
+    opened = ok;
+}
 
 void MainWindow::quitApp(){
     int ret = QMessageBox::question(this, "Thoát", "Bạn có muốn thoát hay không?",
@@ -1065,12 +1046,23 @@ QImage MainWindow::cropping(QImage input, int x1, int y1, int w, int h, bool dra
     }
     return input;
 }
-QImage MainWindow::rotating(QImage input, double angleinp){
-    totalAngle += angleinp;
-    QTransform rotation;
-    rotation.rotate(angleinp);
-    input = input.transformed(rotation,Qt::SmoothTransformation);
-    return input;
+QImage MainWindow::rotating(const QImage& input, double angleinp){
+    QImage output(input);
+    if(output.format() == QImage::Format_Indexed8){
+       output = output.convertToFormat(QImage::Format_RGB888);
+    }
+    output.fill(Qt::transparent);
+    QPainter p(&output);
+    p.setRenderHint(QPainter::SmoothPixmapTransform);
+    p.translate(input.width() / 2, input.height() / 2);
+    p.rotate(angleinp);
+    p.translate(-input.width() / 2, -input.height() / 2);
+    p.drawImage(0, 0, input);
+    p.end();
+//    QTransform rotation;
+//    rotation.rotate(angleinp);
+//    input = input.transformed(rotation,Qt::SmoothTransformation);
+    return output;
 }
 
 void MainWindow::itemClicked(QListWidgetItem *item){
@@ -1095,6 +1087,16 @@ void MainWindow::itemClicked(QListWidgetItem *item){
         autoCropped = false;
         autoRotated = false;
         getNewStartEnd = false;
+        if(!keepPara){
+            aPara = 0;
+            bPara = 0;
+        }
+
+        if(!keepStartEnd){
+            x_mincut = 0;
+            x_maxcut = 0;
+        }
+
         showImage(image);
     }
 }
@@ -1152,15 +1154,19 @@ void MainWindow::addStringToFile(const QString &name, const QString &id){
         }
     }
 }
-void MainWindow::rotForward(){
-    image = rotating(image, angle);
+
+void MainWindow::rotateClick(bool forward){
+    double angRot = forward?angle:(-angle);
+    image = rotating(image, angRot);
+    if(!mask.isNull()){
+        mask = rotating(mask, angRot);
+    }
+    else{
+        totalAngle += angRot;
+    }
     showImage(image);
 }
 
-void MainWindow::rotBackward(){
-    image = rotating(image, -angle);
-    showImage(image);
-}
 
 
 

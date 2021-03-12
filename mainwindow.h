@@ -41,7 +41,7 @@ public:
     void addStringToFile(const QString &name, const QString &id);
     QStringList loadTxtToStringList(const QString &txtpath);
     void removeTableRows();
-
+    void moveDay(bool isNext);
     int timeToCols(QTime startTime, double timeSpace, QTime endTime, int days);
     int levelToRows(int startLevel, double levelExtract, int endLevel);
     int totalTimeofLineinSecs(QTime startTime, QTime endtime, int days);
@@ -58,6 +58,9 @@ public:
     void readJson(QString);
     QImage createImageWithOverlay(const QImage& baseImage, const QImage& overlayImage);
     void pointToValue(double x, double y);
+    QImage cropping(QImage, int, int, int, int, bool);
+    QImage rotating(const QImage&, double);
+    QImage performDilation(const QImage& input);
 
 
     int detectRainOver(int x, int y, int w, int h);
@@ -71,9 +74,8 @@ protected:
 
 public slots:
 
+    void rotateClick(bool forward);
 
-    void rotForward();
-    void rotBackward();
 
     void receivePoint(QPointF);
     void addingRpPoint(QPointF);
@@ -82,29 +84,28 @@ public slots:
 
     void NameToID(int);
     void IDToName(int);
-    void changeParams(QTime, int, QTime, double, double, double, int);
+    void changeParams(QTime, int, QTime, double, double, double, int, bool, bool);
     void saveToTxt();
 
     void switchMode(int);
     void statusMessage(bool, const QString& message);
     void exportNow();
     void changeTable();
-    void nextDay();
-    void prevDay();
 
-    QImage cropping(QImage, int, int, int, int, bool);
-    QImage rotating(QImage, double);
-    QImage performDilation(const QImage& input);
+
 
     void addToMask(const QVector<QPoint>& pointsVec);
     void createMask(bool);
-    void calculateParabolafrom3points(QPointF x1, QPointF x2, QPointF x3);
-    void getNewVariables(int xmin, int ymin, int xmax, int ymax);
+
     void calculateParabol(QVector<QPointF>);
+    void calculateParabolafrom3points(QPointF x1, QPointF x2, QPointF x3);
+    void getNewCutRect(int xmin, int ymin, int xmax, int ymax);
+
     void quitApp();
     void openFolder();
     void itemClicked(QListWidgetItem *item);
     void inputDialog();
+    void dialogCloseOk(bool);
 
 
 private:
@@ -122,6 +123,8 @@ private:
     bool autoRotated = false;
     bool pickingPoints = false;
     bool getNewStartEnd = false;
+    bool keepPara = true;
+    bool keepStartEnd = false;
 
     bool opened;
     QTime startTime;
@@ -138,8 +141,6 @@ private:
     QLabel *colNum = new QLabel;
     QLabel *rowNum = new QLabel;
 
-    QLineEdit *inputBox = new QLineEdit;
-    QLineEdit *timeBox = new QLineEdit;
     QComboBox *modeBox = new QComboBox;
 
     QString boxName = "Chọn loại biểu đồ: ";
@@ -193,7 +194,7 @@ private:
     int litp;
     int difL = 0;
     QTime time;
-
+    double pointSize = 0.002;
     QImage image;
     QImage imagePr;
     QImage mask;
@@ -208,6 +209,8 @@ private:
     double angle = 1;
     double cos;
     double sin;
+
+    int decimalDigit = 0;
 
     int x_mincut, x_maxcut;
 

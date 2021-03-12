@@ -18,18 +18,19 @@ public:
     explicit Input(QWidget *parent = nullptr, int chartType = 0, bool opened = 0);
     ~Input();
     void writeParamsfromSettings();
-
-
     void writeNewParams(QString chartName, int timeGet, int levelStart,
                              double levelGet, int levelEnd, QString unit);
     void writeSettings(QTime, int, QTime, double,
-                       double, double, int);
+                       double, double, int, bool, bool);
+protected:
+    void closeEvent(QCloseEvent *e) override;
 public slots:
     void changeCharts(int chartType);
     void closeButton();
 signals:
+    void passOk(bool);
     void passParams(QTime, int, QTime, double,
-                    double, double, int);
+                    double, double, int, bool, bool);
 private:
     QStringList chartLabels = {"Độ ẩm", "Áp suất",
                              "Lượng mưa", "Nhiệt độ",

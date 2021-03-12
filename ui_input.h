@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QHBoxLayout>
@@ -37,6 +38,7 @@ public:
     QSpinBox *days;
     QLabel *lbtSpace;
     QDoubleSpinBox *timeGet;
+    QCheckBox *keepPara;
     QVBoxLayout *verticalLayout_2;
     QLabel *lblStart;
     QDoubleSpinBox *levelStart;
@@ -44,13 +46,14 @@ public:
     QDoubleSpinBox *levelEnd;
     QLabel *lblSpace;
     QDoubleSpinBox *levelGet;
+    QCheckBox *keepStartEnd;
     QPushButton *Done;
 
     void setupUi(QDialog *Input)
     {
         if (Input->objectName().isEmpty())
             Input->setObjectName(QString::fromUtf8("Input"));
-        Input->resize(449, 273);
+        Input->resize(596, 273);
         verticalLayout_3 = new QVBoxLayout(Input);
         verticalLayout_3->setSpacing(2);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
@@ -76,7 +79,7 @@ public:
         timeStart->setObjectName(QString::fromUtf8("timeStart"));
         timeStart->setFont(font);
         timeStart->setMinimumTime(QTime(0, 0, 0));
-        timeStart->setTime(QTime(7, 0, 0));
+        timeStart->setTime(QTime(0, 0, 0));
 
         horizontalLayout_2->addWidget(timeStart);
 
@@ -95,13 +98,13 @@ public:
         timeEnd = new QTimeEdit(Input);
         timeEnd->setObjectName(QString::fromUtf8("timeEnd"));
         timeEnd->setFont(font);
-        timeEnd->setTime(QTime(7, 0, 0));
 
         horizontalLayout_5->addWidget(timeEnd);
 
         days = new QSpinBox(Input);
         days->setObjectName(QString::fromUtf8("days"));
         days->setFont(font);
+        days->setMaximum(1000);
         days->setValue(1);
 
         horizontalLayout_5->addWidget(days);
@@ -120,6 +123,13 @@ public:
         timeGet->setFont(font);
 
         verticalLayout->addWidget(timeGet);
+
+        keepPara = new QCheckBox(Input);
+        keepPara->setObjectName(QString::fromUtf8("keepPara"));
+        keepPara->setFont(font);
+        keepPara->setChecked(true);
+
+        verticalLayout->addWidget(keepPara);
 
 
         horizontalLayout->addLayout(verticalLayout);
@@ -166,6 +176,14 @@ public:
 
         verticalLayout_2->addWidget(levelGet);
 
+        keepStartEnd = new QCheckBox(Input);
+        keepStartEnd->setObjectName(QString::fromUtf8("keepStartEnd"));
+        keepStartEnd->setEnabled(true);
+        keepStartEnd->setFont(font);
+        keepStartEnd->setChecked(false);
+
+        verticalLayout_2->addWidget(keepStartEnd);
+
 
         horizontalLayout->addLayout(verticalLayout_2);
 
@@ -192,9 +210,11 @@ public:
         lbtEnd->setText(QCoreApplication::translate("Input", "Th\341\273\235i gian k\341\272\277t th\303\272c + s\341\273\221 ng\303\240y", nullptr));
         timeEnd->setDisplayFormat(QCoreApplication::translate("Input", "h:mm ", nullptr));
         lbtSpace->setText(QCoreApplication::translate("Input", "Th\341\273\235i gian l\341\272\245y m\341\272\253u (ph\303\272t)", nullptr));
+        keepPara->setText(QCoreApplication::translate("Input", "Gi\341\273\257 tham s\341\273\221 parabol", nullptr));
         lblStart->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng b\341\272\257t \304\221\341\272\247u", nullptr));
         lblEnd->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng k\341\272\277t th\303\272c", nullptr));
         lblSpace->setText(QCoreApplication::translate("Input", "L\306\260\341\273\243ng/1 d\303\262ng", nullptr));
+        keepStartEnd->setText(QCoreApplication::translate("Input", "Gi\341\273\257 gi\341\273\233i h\341\272\241n \304\221\341\272\247u cu\341\273\221i", nullptr));
         Done->setText(QCoreApplication::translate("Input", "\303\201p d\341\273\245ng", nullptr));
     } // retranslateUi
 

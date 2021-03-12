@@ -101,7 +101,17 @@ int last(const std::vector<int> &input, int n, int x)
     // return the leftmost index or -1 if the element is not found
     return result;
 }
-template <typename T1, typename T2> QImage drawPointDebug(QImage image, std::vector<T1> xP, std::vector<T2> yP,
+void drawALine(QImage& image, int x, const QColor& color, int penWidth){
+    QPainter painter(&image);
+    QPen pen;
+    pen.setWidth(penWidth);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(color);
+    painter.setPen(pen);
+    painter.drawLine(x, 0, x, image.height());
+    painter.end();
+}
+template <typename T1, typename T2> void drawPointDebug(QImage& image, const std::vector<T1>& xP, const std::vector<T2>& yP,
                                                           const QColor &color, int penWidth = 10){
     QPainter painter(&image);
     QPen pen;
@@ -114,7 +124,7 @@ template <typename T1, typename T2> QImage drawPointDebug(QImage image, std::vec
 
     }
     painter.end();
-    return image;
+//    return image;
 }
 
 template <typename T1, typename T2> QImage drawRectDebug(QImage image, std::vector<T1> xP, std::vector<T2> yP,
@@ -131,11 +141,11 @@ template <typename T1, typename T2> QImage drawRectDebug(QImage image, std::vect
     painter.end();
     return image;
 }
-template <typename T> std::vector<T> removeDuplicate(const std::vector<T> &uniqueVector, const std::vector<T> &rawVector, const std::vector<T> &findVector){
+template <typename T1, typename T2> std::vector<T2> removeDuplicate(const std::vector<T1> &uniqueVector, const std::vector<T1> &rawVector, const std::vector<T2> &findVector){
     int index;
 
-    std::vector<T> forward;
-    std::vector<T> output;
+    std::vector<T1> forward;
+    std::vector<T2> output;
     for (int x:uniqueVector) {
 
         index = first(rawVector, rawVector.size(), x);

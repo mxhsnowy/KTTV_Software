@@ -14,6 +14,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -48,29 +49,35 @@ public:
     QAction *actionlimitLine;
     QAction *actionDraw;
     QWidget *centralwidget;
-    QHBoxLayout *horizontalLayout;
+    QHBoxLayout *horizontalLayout_4;
     QVBoxLayout *verticalLayout_2;
     QListWidget *showFolder;
     MyGraphicsView *Mask;
-    QVBoxLayout *verticalLayout;
+    QVBoxLayout *verticalLayout_5;
     QTableWidget *dataView;
     QGridLayout *gridLayout_3;
-    QSpinBox *timeUD;
-    QSpinBox *levelUD;
     QLabel *label_5;
     QLabel *label_6;
+    QSpinBox *timeUD;
+    QDoubleSpinBox *levelUD;
     QPushButton *change;
-    QGridLayout *gridLayout;
-    QLabel *label_3;
-    QPushButton *prevDay;
-    QLineEdit *IDchart;
-    QPushButton *nextDay;
-    QComboBox *stationID;
-    QLabel *label_4;
-    QLabel *label_2;
-    QComboBox *stationBox;
-    QLineEdit *daychart;
+    QHBoxLayout *horizontalLayout_2;
+    QVBoxLayout *verticalLayout;
     QLabel *label;
+    QLabel *label_3;
+    QLabel *label_2;
+    QLabel *label_4;
+    QVBoxLayout *verticalLayout_3;
+    QLineEdit *IDchart;
+    QHBoxLayout *horizontalLayout;
+    QLineEdit *daychart;
+    QLineEdit *dayInput;
+    QComboBox *stationBox;
+    QComboBox *stationID;
+    QVBoxLayout *verticalLayout_4;
+    QHBoxLayout *horizontalLayout_3;
+    QPushButton *prevDay;
+    QPushButton *nextDay;
     QPushButton *digitalize;
     QPushButton *save;
     QToolBar *toolBar;
@@ -155,10 +162,10 @@ public:
         actionDraw->setIcon(icon11);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        horizontalLayout = new QHBoxLayout(centralwidget);
-        horizontalLayout->setSpacing(4);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(2, 2, 2, 2);
+        horizontalLayout_4 = new QHBoxLayout(centralwidget);
+        horizontalLayout_4->setSpacing(2);
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        horizontalLayout_4->setContentsMargins(0, 0, -1, 0);
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         showFolder = new QListWidget(centralwidget);
@@ -183,7 +190,7 @@ public:
         verticalLayout_2->addWidget(showFolder);
 
 
-        horizontalLayout->addLayout(verticalLayout_2);
+        horizontalLayout_4->addLayout(verticalLayout_2);
 
         Mask = new MyGraphicsView(centralwidget);
         Mask->setObjectName(QString::fromUtf8("Mask"));
@@ -193,11 +200,11 @@ public:
         sizePolicy1.setHeightForWidth(Mask->sizePolicy().hasHeightForWidth());
         Mask->setSizePolicy(sizePolicy1);
 
-        horizontalLayout->addWidget(Mask);
+        horizontalLayout_4->addWidget(Mask);
 
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setSpacing(2);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
         dataView = new QTableWidget(centralwidget);
         if (dataView->columnCount() < 2)
             dataView->setColumnCount(2);
@@ -207,27 +214,11 @@ public:
         dataView->setColumnCount(2);
         dataView->verticalHeader()->setVisible(false);
 
-        verticalLayout->addWidget(dataView);
+        verticalLayout_5->addWidget(dataView);
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(2);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        timeUD = new QSpinBox(centralwidget);
-        timeUD->setObjectName(QString::fromUtf8("timeUD"));
-        timeUD->setFont(font);
-        timeUD->setMinimum(-1000);
-        timeUD->setMaximum(1000);
-
-        gridLayout_3->addWidget(timeUD, 2, 0, 1, 1);
-
-        levelUD = new QSpinBox(centralwidget);
-        levelUD->setObjectName(QString::fromUtf8("levelUD"));
-        levelUD->setFont(font);
-        levelUD->setMinimum(-1000);
-        levelUD->setMaximum(1000);
-
-        gridLayout_3->addWidget(levelUD, 2, 1, 1, 1);
-
         label_5 = new QLabel(centralwidget);
         label_5->setObjectName(QString::fromUtf8("label_5"));
         label_5->setFont(font);
@@ -240,115 +231,193 @@ public:
 
         gridLayout_3->addWidget(label_6, 1, 0, 1, 1);
 
+        timeUD = new QSpinBox(centralwidget);
+        timeUD->setObjectName(QString::fromUtf8("timeUD"));
+        timeUD->setFont(font);
+        timeUD->setMinimum(-10000);
+        timeUD->setMaximum(10000);
 
-        verticalLayout->addLayout(gridLayout_3);
+        gridLayout_3->addWidget(timeUD, 2, 0, 1, 1);
+
+        levelUD = new QDoubleSpinBox(centralwidget);
+        levelUD->setObjectName(QString::fromUtf8("levelUD"));
+        levelUD->setFont(font);
+        levelUD->setMinimum(-10000.000000000000000);
+        levelUD->setMaximum(10000.000000000000000);
+
+        gridLayout_3->addWidget(levelUD, 2, 1, 1, 1);
+
+
+        verticalLayout_5->addLayout(gridLayout_3);
 
         change = new QPushButton(centralwidget);
         change->setObjectName(QString::fromUtf8("change"));
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(change->sizePolicy().hasHeightForWidth());
+        change->setSizePolicy(sizePolicy2);
         change->setFont(font);
 
-        verticalLayout->addWidget(change);
+        verticalLayout_5->addWidget(change);
 
-        gridLayout = new QGridLayout();
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        gridLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
-        gridLayout->setHorizontalSpacing(4);
-        gridLayout->setVerticalSpacing(2);
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(2);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(4);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy3);
+        label->setFont(font);
+
+        verticalLayout->addWidget(label);
+
         label_3 = new QLabel(centralwidget);
         label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setFont(font);
 
-        gridLayout->addWidget(label_3, 2, 0, 1, 1);
-
-        prevDay = new QPushButton(centralwidget);
-        prevDay->setObjectName(QString::fromUtf8("prevDay"));
-        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(prevDay->sizePolicy().hasHeightForWidth());
-        prevDay->setSizePolicy(sizePolicy2);
-        prevDay->setFont(font);
-
-        gridLayout->addWidget(prevDay, 5, 0, 1, 1);
-
-        IDchart = new QLineEdit(centralwidget);
-        IDchart->setObjectName(QString::fromUtf8("IDchart"));
-        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(IDchart->sizePolicy().hasHeightForWidth());
-        IDchart->setSizePolicy(sizePolicy3);
-        IDchart->setFont(font);
-
-        gridLayout->addWidget(IDchart, 1, 1, 1, 1);
-
-        nextDay = new QPushButton(centralwidget);
-        nextDay->setObjectName(QString::fromUtf8("nextDay"));
-        sizePolicy2.setHeightForWidth(nextDay->sizePolicy().hasHeightForWidth());
-        nextDay->setSizePolicy(sizePolicy2);
-        nextDay->setFont(font);
-
-        gridLayout->addWidget(nextDay, 5, 1, 1, 1);
-
-        stationID = new QComboBox(centralwidget);
-        stationID->setObjectName(QString::fromUtf8("stationID"));
-        stationID->setFont(font);
-        stationID->setEditable(true);
-
-        gridLayout->addWidget(stationID, 4, 1, 1, 1);
-
-        label_4 = new QLabel(centralwidget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setFont(font);
-
-        gridLayout->addWidget(label_4, 4, 0, 1, 1);
+        verticalLayout->addWidget(label_3);
 
         label_2 = new QLabel(centralwidget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setFont(font);
 
-        gridLayout->addWidget(label_2, 3, 0, 1, 1);
+        verticalLayout->addWidget(label_2);
+
+        label_4 = new QLabel(centralwidget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setFont(font);
+
+        verticalLayout->addWidget(label_4);
+
+
+        horizontalLayout_2->addLayout(verticalLayout);
+
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setSpacing(2);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        IDchart = new QLineEdit(centralwidget);
+        IDchart->setObjectName(QString::fromUtf8("IDchart"));
+        QSizePolicy sizePolicy4(QSizePolicy::Maximum, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(IDchart->sizePolicy().hasHeightForWidth());
+        IDchart->setSizePolicy(sizePolicy4);
+        IDchart->setFont(font);
+
+        verticalLayout_3->addWidget(IDchart);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(2);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        daychart = new QLineEdit(centralwidget);
+        daychart->setObjectName(QString::fromUtf8("daychart"));
+        QSizePolicy sizePolicy5(QSizePolicy::Preferred, QSizePolicy::Minimum);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(daychart->sizePolicy().hasHeightForWidth());
+        daychart->setSizePolicy(sizePolicy5);
+        daychart->setMaximumSize(QSize(41, 16777215));
+        daychart->setFont(font);
+        daychart->setReadOnly(true);
+
+        horizontalLayout->addWidget(daychart);
+
+        dayInput = new QLineEdit(centralwidget);
+        dayInput->setObjectName(QString::fromUtf8("dayInput"));
+        sizePolicy3.setHeightForWidth(dayInput->sizePolicy().hasHeightForWidth());
+        dayInput->setSizePolicy(sizePolicy3);
+        dayInput->setFont(font);
+
+        horizontalLayout->addWidget(dayInput);
+
+
+        verticalLayout_3->addLayout(horizontalLayout);
 
         stationBox = new QComboBox(centralwidget);
         stationBox->setObjectName(QString::fromUtf8("stationBox"));
+        sizePolicy4.setHeightForWidth(stationBox->sizePolicy().hasHeightForWidth());
+        stationBox->setSizePolicy(sizePolicy4);
+        stationBox->setMinimumSize(QSize(172, 0));
         stationBox->setFont(font);
         stationBox->setEditable(true);
 
-        gridLayout->addWidget(stationBox, 3, 1, 1, 1);
+        verticalLayout_3->addWidget(stationBox);
 
-        daychart = new QLineEdit(centralwidget);
-        daychart->setObjectName(QString::fromUtf8("daychart"));
-        sizePolicy3.setHeightForWidth(daychart->sizePolicy().hasHeightForWidth());
-        daychart->setSizePolicy(sizePolicy3);
-        daychart->setFont(font);
+        stationID = new QComboBox(centralwidget);
+        stationID->setObjectName(QString::fromUtf8("stationID"));
+        sizePolicy4.setHeightForWidth(stationID->sizePolicy().hasHeightForWidth());
+        stationID->setSizePolicy(sizePolicy4);
+        stationID->setMinimumSize(QSize(172, 0));
+        stationID->setFont(font);
+        stationID->setEditable(true);
 
-        gridLayout->addWidget(daychart, 2, 1, 1, 1);
-
-        label = new QLabel(centralwidget);
-        label->setObjectName(QString::fromUtf8("label"));
-        sizePolicy2.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy2);
-        label->setFont(font);
-
-        gridLayout->addWidget(label, 1, 0, 1, 1);
+        verticalLayout_3->addWidget(stationID);
 
 
-        verticalLayout->addLayout(gridLayout);
+        horizontalLayout_2->addLayout(verticalLayout_3);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_2);
+
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setSpacing(2);
+        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(0);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        prevDay = new QPushButton(centralwidget);
+        prevDay->setObjectName(QString::fromUtf8("prevDay"));
+        QSizePolicy sizePolicy6(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(prevDay->sizePolicy().hasHeightForWidth());
+        prevDay->setSizePolicy(sizePolicy6);
+        prevDay->setFont(font);
+
+        horizontalLayout_3->addWidget(prevDay);
+
+        nextDay = new QPushButton(centralwidget);
+        nextDay->setObjectName(QString::fromUtf8("nextDay"));
+        sizePolicy6.setHeightForWidth(nextDay->sizePolicy().hasHeightForWidth());
+        nextDay->setSizePolicy(sizePolicy6);
+        nextDay->setFont(font);
+
+        horizontalLayout_3->addWidget(nextDay);
+
+
+        verticalLayout_4->addLayout(horizontalLayout_3);
 
         digitalize = new QPushButton(centralwidget);
         digitalize->setObjectName(QString::fromUtf8("digitalize"));
+        QSizePolicy sizePolicy7(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(digitalize->sizePolicy().hasHeightForWidth());
+        digitalize->setSizePolicy(sizePolicy7);
         digitalize->setFont(font);
 
-        verticalLayout->addWidget(digitalize);
+        verticalLayout_4->addWidget(digitalize);
 
         save = new QPushButton(centralwidget);
         save->setObjectName(QString::fromUtf8("save"));
+        sizePolicy7.setHeightForWidth(save->sizePolicy().hasHeightForWidth());
+        save->setSizePolicy(sizePolicy7);
         save->setFont(font);
 
-        verticalLayout->addWidget(save);
+        verticalLayout_4->addWidget(save);
 
 
-        horizontalLayout->addLayout(verticalLayout);
+        verticalLayout_5->addLayout(verticalLayout_4);
+
+
+        horizontalLayout_4->addLayout(verticalLayout_5);
 
         MainWindow->setCentralWidget(centralwidget);
         toolBar = new QToolBar(MainWindow);
@@ -433,12 +502,12 @@ public:
         label_5->setText(QCoreApplication::translate("MainWindow", "+/- l\306\260\341\273\243ng", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "+/- th\341\273\235i gian", nullptr));
         change->setText(QCoreApplication::translate("MainWindow", "\304\220i\341\273\201u ch\341\273\211nh", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y th\303\241ng", nullptr));
-        prevDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y tr\306\260\341\273\233c", nullptr));
-        nextDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y ti\341\272\277p", nullptr));
-        label_4->setText(QCoreApplication::translate("MainWindow", "M\303\243 tr\341\272\241m", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "T\303\252n tr\341\272\241m", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "M\303\243 t\303\240i li\341\273\207u", nullptr));
+        label_3->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y th\303\241ng", nullptr));
+        label_2->setText(QCoreApplication::translate("MainWindow", "T\303\252n tr\341\272\241m", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "M\303\243 tr\341\272\241m", nullptr));
+        prevDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y tr\306\260\341\273\233c", nullptr));
+        nextDay->setText(QCoreApplication::translate("MainWindow", "Ng\303\240y sau", nullptr));
         digitalize->setText(QCoreApplication::translate("MainWindow", "T\341\272\241o b\303\241o c\303\241o ", nullptr));
         save->setText(QCoreApplication::translate("MainWindow", "L\306\260u k\341\272\277t qu\341\272\243", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));

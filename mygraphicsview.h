@@ -42,6 +42,7 @@ signals:
     void passLimitPoint(QPointF);
     void passDrewPoints(const QVector<QPoint>& pointsVec);
 private:
+    double circleRatio = 0.002;
     bool draw = 0;
     bool drawing = 0;
     bool limitLine = 0;
