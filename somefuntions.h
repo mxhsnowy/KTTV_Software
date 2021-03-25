@@ -4,7 +4,7 @@
 #include <vector>
 #include <numeric>      // std::iota
 #include <algorithm>    // std::sort, std::stable_sort
-
+#include <opencv2/opencv.hpp>
 #include <QImage>
 #include <QPainter>
 #include <QPen>
@@ -27,7 +27,7 @@ vector<size_t> sort_indexes(const vector<T> &v) {
   return idx;
 }
 
-int first(const std::vector<int> &input, int n, int x)
+template<typename T> int first(const std::vector<T> &input, int n, int x)
 {
 
     // search space is arr[low..high]
@@ -64,7 +64,7 @@ int first(const std::vector<int> &input, int n, int x)
         // return the leftmost index or -1 if the element is not found
         return result;
 }
-int last(const std::vector<int> &input, int n, int x)
+template<typename T> int last(const std::vector<T> &input, int n, int x)
 {
 
     // search space is A[low..high]
@@ -101,6 +101,7 @@ int last(const std::vector<int> &input, int n, int x)
     // return the leftmost index or -1 if the element is not found
     return result;
 }
+
 void drawALine(QImage& image, int x, const QColor& color, int penWidth){
     QPainter painter(&image);
     QPen pen;
@@ -124,9 +125,21 @@ template <typename T1, typename T2> void drawPointDebug(QImage& image, const std
 
     }
     painter.end();
-//    return image;
-}
 
+}
+void drawPointDebug(QImage& image, const std::vector<cv::Point2d>& points, const QColor &color, int penWidth = 10){
+    QPainter painter(&image);
+    QPen pen;
+    pen.setWidth(penWidth);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(color);
+    painter.setPen(pen);
+    for (cv::Point2d p: points) {
+        painter.drawPoint(p.x, p.y);
+    }
+    painter.end();
+
+}
 template <typename T1, typename T2> QImage drawRectDebug(QImage image, std::vector<T1> xP, std::vector<T2> yP,
                                                           const QColor &color, double height, int penWidth = 20){
     QPainter painter(&image);
@@ -153,13 +166,13 @@ template <typename T1, typename T2> std::vector<T2> removeDuplicate(const std::v
 
     }
 
-    for(int x:forward){
+    for(const int& x:forward){
         output.push_back(findVector.at(x));
     }
     return output;
 }
 
-template<typename T> std::vector<T> getMissingIndex(std::vector<T> inputTimeVector, int threshold){
+template<typename T> std::vector<int> getMissingIndex(std::vector<T> inputTimeVector, double threshold){
     // Make diff and index vector
 //    qDebug()<<"Input vector"<<inputTimeVector<<"\n";
 //    qDebug()<<"difference"<<threshold<<"\n";
@@ -171,19 +184,25 @@ template<typename T> std::vector<T> getMissingIndex(std::vector<T> inputTimeVect
 //        qDebug()<<inputTimeVector[i-1]<<"\n";
         diff.push_back(inputTimeVector[i]-inputTimeVector[i-1]);
     }
-//    qDebug()<<"Diff"<<diff<<"\n";
-//    std::adjacent_difference(inputTimeVector.begin(), inputTimeVector.end(), diff);
-//    diff.erase(diff.begin());
-//    std::vector<int>::iterator it = std::find(diff.begin(), diff.end(), threshold);
-//    std::vector<int>::iterator it = std::find_if(diff.begin(), diff.end(), [](int i){return i!=threshold;});
-//    if (it != diff.end()){
-//        indexes.push_back(it - diff.begin());
-//    }
     for (int i = 0; i<diff.size(); ++i) {
         if(diff[i]!=threshold){
             indexes.push_back(i+1);
         }
     }
     return indexes;
+}
+
+template<class InputIterator, class Function>
+  Function for_each_until(InputIterator first, InputIterator last, Function fn)
+{
+  while (first!=last) {
+    if(fn(first)){
+        break;
+    }
+//    fn (*first);
+    ++first;
+
+  }
+  return fn;      // or, since C++11: return move(fn);
 }
 #endif // SOMEFUNTIONS_H

@@ -93,11 +93,10 @@ public slots:
     void changeTable();
 
 
-
+    void test_rain_reader();
     void addToMask(const QVector<QPoint>& pointsVec);
     void createMask(bool);
 
-    void calculateParabol(QVector<QPointF>);
     void calculateParabolafrom3points(QPointF x1, QPointF x2, QPointF x3);
     void getNewCutRect(int xmin, int ymin, int xmax, int ymax);
 
@@ -123,6 +122,7 @@ private:
     bool autoRotated = false;
     bool pickingPoints = false;
     bool getNewStartEnd = false;
+
     bool keepPara = true;
     bool keepStartEnd = false;
 

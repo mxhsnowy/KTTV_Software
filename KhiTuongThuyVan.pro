@@ -65,9 +65,9 @@ DISTFILES +=
 
 RESOURCES += \
     Icon.qrc
-win32:CONFIG(release, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/install/x64/vc15/lib/" -lopencv_world420
-else:win32:CONFIG(debug, debug|release): LIBS += -L"E:/opencv 4.2.0/buildx64/install/x64/vc15/lib/" -lopencv_world420d
+win32:CONFIG(release, debug|release): LIBS += -L"E:/opencv_4.5.1/opencv/build/x64/vc15/lib" -lopencv_world451
+else:win32:CONFIG(debug, debug|release): LIBS += -L"E:/opencv_4.5.1/opencv/build/x64/vc15/lib" -lopencv_world451d
 
-INCLUDEPATH += "E:/opencv 4.2.0/buildx64/install/include"
+INCLUDEPATH += "E:/opencv_4.5.1/opencv/build/include"
 
-DEPENDPATH += "E:/opencv 4.2.0/buildx64/install/include"
+DEPENDPATH += "E:/opencv_4.5.1/opencv/build/include"

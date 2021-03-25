@@ -48,6 +48,7 @@ public:
     QAction *actionPicking_Points;
     QAction *actionlimitLine;
     QAction *actionDraw;
+    QAction *actionTestRR;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout_4;
     QVBoxLayout *verticalLayout_2;
@@ -160,6 +161,8 @@ public:
         icon11.addFile(QString::fromUtf8(":/icon/icons/draw.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon11.addFile(QString::fromUtf8(":/icon/icons/drawing.png"), QSize(), QIcon::Normal, QIcon::On);
         actionDraw->setIcon(icon11);
+        actionTestRR = new QAction(MainWindow);
+        actionTestRR->setObjectName(QString::fromUtf8("actionTestRR"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayout_4 = new QHBoxLayout(centralwidget);
@@ -499,6 +502,7 @@ public:
 #if QT_CONFIG(tooltip)
         actionDraw->setToolTip(QCoreApplication::translate("MainWindow", "V\341\272\275 \304\221\306\260\341\273\235ng \304\221\341\272\267c t\303\255nh \304\221\341\273\203 ph\341\272\247n m\341\273\201m nh\341\272\255n bi\341\272\277t", nullptr));
 #endif // QT_CONFIG(tooltip)
+        actionTestRR->setText(QCoreApplication::translate("MainWindow", "TestRR", nullptr));
         label_5->setText(QCoreApplication::translate("MainWindow", "+/- l\306\260\341\273\243ng", nullptr));
         label_6->setText(QCoreApplication::translate("MainWindow", "+/- th\341\273\235i gian", nullptr));
         change->setText(QCoreApplication::translate("MainWindow", "\304\220i\341\273\201u ch\341\273\211nh", nullptr));

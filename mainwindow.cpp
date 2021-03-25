@@ -3,6 +3,7 @@
 #include "convert.h"
 #include "somefuntions.h"
 #include <numeric>
+#include "Rain-Reader/src/Processing.h"
 #include <QList>
 /**
  * @brief MainWindow::MainWindow
@@ -108,6 +109,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Mask, &MyGraphicsView::passRectPoint, this, &MainWindow::addingRectPoint);
     connect(ui->Mask, &MyGraphicsView::passLimitPoint, this, &MainWindow::changeStartEndPoint);
     connect(ui->Mask, &MyGraphicsView::passDrewPoints, this, &MainWindow::addToMask);
+    connect(ui->actionTestRR, &QAction::triggered, this, &MainWindow::test_rain_reader);
     switchMode(0);
     opened = 0;
 
@@ -268,8 +270,16 @@ void MainWindow::receivePoint(QPointF point){
     neededPoints.append(point);
     if(neededPoints.size() == 3){
        ui->actionMarking->trigger();
-       calculateParabol(neededPoints);
 
+       // image = image.copy(QRect(0, neededPoints[0].y(), image.width(), gridHeight)
+       y_min = neededPoints[0].y();
+       y_max = neededPoints[2].y();
+       gridHeight = qAbs(y_max - y_min);
+       qDebug()<<"Y min received "<<y_min<<"\n";
+       calculateParabolafrom3points(QPointF(neededPoints[0].y(), neededPoints[0].x()),
+                                    QPointF(neededPoints[1].y(), neededPoints[1].x()),
+                                    QPointF(neededPoints[2].y(), neededPoints[2].x()));
+       neededPoints = {};
        QMessageBox msgBox;
        msgBox.setText("Bạn đã chọn xong 3 điểm quan trọng của parabol");
        msgBox.exec();
@@ -317,20 +327,7 @@ void MainWindow::addingRpPoint(QPointF point){
 //        ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
 //    }
 }
-void MainWindow::calculateParabol(QVector<QPointF> pointsVt){
-    //Check size
-    if(pointsVt.size() != 3){
-        return;
-    }
-    // Top parabol, mid parabol, bot getNewVariablespara
-    gridHeight = qAbs(pointsVt[2].y() - pointsVt[0].y());
-    // image = image.copy(QRect(0, pointsVt[0].y(), image.width(), gridHeight)
-    y_min = pointsVt[0].y();
-    y_max = pointsVt[2].y();
-    calculateParabolafrom3points(QPointF(pointsVt[0].y(), pointsVt[0].x()),
-                                 QPointF(pointsVt[1].y(), pointsVt[1].x()),
-                                 QPointF(pointsVt[2].y(), pointsVt[2].x()));
-}
+
 
 int MainWindow::timeToCols(QTime start_time, double timeExtractinMin, QTime end_time, int days){
     int diff = start_time.secsTo(end_time) + 86400*days;
@@ -380,7 +377,7 @@ void MainWindow::changeParams(QTime start_time, int time_extract, QTime end_time
 }
 void MainWindow::saveToTxt(){
 
-    QString name = ui->dayInput->text()+"_"+ui->daychart->text()+"_"+QString::number(dayCount);
+    QString name = ui->IDchart->text()+"_"+ui->daychart->text()+"_"+QString::number(dayCount);
     QString exportFile = exportDir+"/"+name+".csv";
     qDebug()<<exportFile<<"\n";
     QFile f(exportFile);
@@ -411,7 +408,7 @@ void MainWindow::saveToTxt(){
 
         for ( int i = 0 ; i < ui->dataView->rowCount(); i++ )
         {
-            conTent += ui->stationID->currentText()+ ","+ ui->stationBox->currentText()+ "," + ui->daychart->text() + ",";
+            conTent += ui->stationID->currentText()+ ","+ ui->stationBox->currentText()+ "," + ui->dayInput->text() + ",";
             for ( int j = 0; j < ui->dataView->columnCount(); j++ )
             {
                 QTableWidgetItem* item = ui->dataView->item(i, j);
@@ -481,9 +478,6 @@ void MainWindow::exportNow(){
  * @param cutMinutes: given minutes to extract(eg. 15, 60)
  * @todo: Need to review
  */
-bool point_smaller_x(const cv::Point &p1, const cv::Point &p2){
-    return p1.x < p2.x;
-}
 
 QImage MainWindow::performDilation(const QImage& input){
     cv::Mat maskcv = cvert::QImageToCvMat(input);
@@ -516,18 +510,19 @@ std::vector<cv::Point> findLineinQImage(const QImage& inputImg){
 void MainWindow::extractDataFromLine(const QImage& inputMask){
 
     locations = findLineinQImage(inputMask);
+
     int x_minl, y_minl, x_maxl;
     int prow = 0;
+    std::vector<cv::Point>::iterator itm;
     if (getNewStartEnd){
         int index;
         int x_min = x_mincut;
         int x_max = x_maxcut;
-        std::vector<cv::Point>::iterator itm;
         // Find the first point
-        itm = std::find_if(locations.begin(), locations.end(), [x_min](const cv::Point p){return p.x==x_min;});
+        itm = std::find_if(locations.begin(), locations.end(), [&x_min](const cv::Point2d& p){return p.x==x_min;});
         if (itm == locations.end()){
             // If the most left point not found in line, use the left and right most of the line instead
-            auto mmx = std::minmax_element(locations.begin(), locations.end(), point_smaller_x);
+            auto mmx = std::minmax_element(locations.begin(), locations.end(), [&](const cv::Point2d& p1, const cv::Point2d& p2){return p1.x<p2.x;});
             x_minl = mmx.first->x;
             y_minl = mmx.first->y;
             x_maxl = mmx.second->x;
@@ -537,146 +532,92 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
             index = itm - locations.begin();
             x_minl = locations[index].x;
             y_minl = locations[index].y;
-            itm = std::find_if(locations.begin(), locations.end(), [x_max](const cv::Point p){return p.x==x_max;});
+            itm = std::find_if(locations.begin(), locations.end(), [&x_max](const cv::Point& p){return p.x==x_max;});
             index = itm - locations.begin();
             x_maxl = locations[index].x;
         }
     }
+
     else{
-        auto mmx = std::minmax_element(locations.begin(), locations.end(), point_smaller_x);
+        auto mmx = std::minmax_element(locations.begin(), locations.end(), [&](const cv::Point2d& p1, const cv::Point2d& p2){return p1.x<p2.x;});
         x_minl = mmx.first->x;
         y_minl = mmx.first->y;
         x_maxl = mmx.second->x;
-
-
     }
     drawALine(image, x_minl, Qt::magenta, 10);
     drawALine(image, x_maxl, Qt::magenta, 10);
     int xLineWidth = qAbs(x_maxl - x_minl);
-    int blockWidthPx = xLineWidth/(numCols-1);
-    int blockHeightPx = gridHeight/numRows;
+    double blockWidthPx = double(xLineWidth)/numCols;
 
-
-    std::vector<int> extractedPointAtX;
-    std::vector<int> extractedPointAtY;
-    std::vector<int> sortedPointAtX;
-    std::vector<double> sortedPointAtY;
-    std::vector<size_t> sortedIndexes;
-    std::vector<int> copiedExtractedX;
+    double blockHeightPx = double(gridHeight)/numRows;
+    qDebug()<<xLineWidth<<numCols<<"\n";
+    qDebug()<<"Block width:"<<blockWidthPx<<"\n";
+    qDebug()<<gridHeight<<numRows<<"\n";
+    qDebug()<<"Block height:"<<blockHeightPx<<"\n";
+    std::vector<int> reportedPointAtX;
+    std::vector<int> reportedPointAtY;
     int j = 0;
-    int value = 0;
+    double value = 0;
     std::vector<int>::iterator it;
     std::vector<int> indexFound;
     std::vector<int> missingIndexes;
+    std::vector<cv::Point2d> extractedPoints;
     //! Cartesian axis
     if(chartType == 4 || chartType == 2){
-        std::vector<int> locationsX;
-        for (cv::Point p: locations) {
-            locationsX.push_back(p.x);
-        }
 
-        while(value<x_maxl){
+        while(value<=x_maxl){
             value = x_minl + blockWidthPx * j;
-
-            it = std::find(locationsX.begin(), locationsX.end(), value);
-            if (it != locationsX.end()){
-                indexFound.push_back(it - locationsX.begin());
-            }
+            itm = std::find_if(locations.begin(), locations.end(), [&value](const cv::Point2d& p){return p.x==int(value);});
+            extractedPoints.push_back(*itm);
             j++;
         }
-        for (int i:indexFound) {
-            extractedPointAtX.push_back(locations[i].x);
-            extractedPointAtY.push_back(locations[i].y);
-        }
-
-//        qDebug()<<extractedPointAtX<<extractedPointAtY<<"\n";
-        sortedIndexes = sort_indexes(extractedPointAtX);
-        for(int i:sortedIndexes){
-            sortedPointAtX.push_back(extractedPointAtX[i]);
-            sortedPointAtY.push_back(extractedPointAtY[i]);
-        }
-//        qDebug()<<sortedPointAtX<<sortedPointAtY<<"\n";
-        copiedExtractedX = sortedPointAtX;
-        sortedPointAtX.erase(std::unique(sortedPointAtX.begin(), sortedPointAtX.end()), sortedPointAtX.end());
-        sortedPointAtY = removeDuplicate(sortedPointAtX, copiedExtractedX, sortedPointAtY);
-//        qDebug()<<sortedPointAtX<<sortedPointAtY<<"\n";
-        drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, image.width()*0.002);
-//        std::vector<int> vec_ymin(sortedPointAtX.size(), y_min);
-//        image = drawRectDebug(image, sortedPointAtX, vec_ymin, Qt::red, blockHeightPx*12);
+        drawPointDebug(image, extractedPoints, Qt::green, image.width()*pointSize);
         showImage(image);
         //!@brief test erase an element in the vector
+//        reportedPointAtY.erase(reportedPointAtY.begin()+4);
+//        reportedPointAtX.erase(reportedPointAtX.begin()+4);
+        //!end test
 
-//        sortedPointAtY.erase(sortedPointAtY.begin()+4);
-//        sortedPointAtX.erase(sortedPointAtX.begin()+4);
-        //! end test
-        qDebug()<<"Done test 1\n";
-        missingIndexes = getMissingIndex(sortedPointAtX, blockWidthPx);
-        qDebug()<<"Missing index is"<<missingIndexes<<"\n";
-
-        //!Converting to time and level
-        for (int i = 0; i < sortedPointAtX.size(); i++) {
-            sortedPointAtX[i] = (sortedPointAtX[i]-x_minl)*timeExtract*60/blockWidthPx;
-            sortedPointAtY[i] = (gridHeight - (sortedPointAtY[i]-y_min))*levelExtract/blockHeightPx;
+//        missingIndexes = getMissingIndex(reportedPointAtX, blockWidthPx);
+//        qDebug()<<"Missing index is"<<missingIndexes<<"\n";
+        for (const cv::Point2d& p: extractedPoints) {
+            reportedPointAtX.push_back(((int(p.x-x_minl))*timeExtract*60)/blockWidthPx);
+            reportedPointAtY.push_back((gridHeight - (p.y - y_min))*levelExtract/blockHeightPx);
         }
     }
     else{
-        // Converting time element
-        std::vector<int> parabolX;
-        std::vector<int> parabolXN;
-        std::vector<int> parabolXSort;
+        //! Parabola axis
+        std::vector<int> parabolyzedX;
         double c;
-        for (int i = 0; i<locations.size(); i++) {
-            c = locations[i].x-aPara*qPow(locations[i].y, 2)-bPara*locations[i].y;
-            parabolX.push_back(aPara*qPow(y_min, 2)+bPara*y_min+c);
+        //! @a converting from vertical to parabol points
+        cout<<"Locations before"<<locations<<"\n";
+        for(const cv::Point& p: locations){
+            c = p.x-aPara*qPow(p.y, 2)-bPara*p.y;
+            parabolyzedX.push_back(aPara*qPow(y_min, 2)+bPara*y_min+c);
         }
+        cout<<"Locations after"<<locations<<"\n";
         c = x_minl-aPara*qPow(y_minl, 2)-bPara*y_minl;
-        int cmin = aPara*qPow(y_min, 2)+bPara*y_min+c;
-
-        while(value<x_maxl){
-            value = cmin + blockWidthPx * j;
-            it = std::find(parabolX.begin(), parabolX.end(), value);
-            if (it != parabolX.end()){
-                indexFound.push_back(it - parabolX.begin());
-            }
+        double c_minl = aPara*qPow(y_min, 2)+bPara*y_min+c;
+        std::vector<int> indexes;
+        std::vector<int>::iterator it;
+        while(value<=x_maxl){
+            value = c_minl + blockWidthPx * j;
+            it = std::find(parabolyzedX.begin(), parabolyzedX.end(), qRound(value));
+            indexes.push_back(it-parabolyzedX.begin());
             j++;
         }
-        for (int i : indexFound) {
-            parabolXN.push_back(parabolX[i]);
-            extractedPointAtX.push_back(locations[i].x);
-            extractedPointAtY.push_back(locations[i].y);
+        for(const int& i: indexes){
+            extractedPoints.push_back(locations[i]);
         }
 
-
-        sortedIndexes = sort_indexes(parabolXN);
-
-        for(int i:sortedIndexes){
-            parabolXSort.push_back(parabolXN[i]);
-            sortedPointAtX.push_back(extractedPointAtX[i]);
-            sortedPointAtY.push_back(extractedPointAtY[i]);
-        }
-
-        std::vector<int> parabolXSortRaw = parabolXSort;
-        parabolXSort.erase(std::unique(parabolXSort.begin(), parabolXSort.end()), parabolXSort.end());
-        sortedPointAtX = removeDuplicate(parabolXSort, parabolXSortRaw, sortedPointAtX);
-        sortedPointAtY = removeDuplicate(parabolXSort, parabolXSortRaw, sortedPointAtY);
-
-
-        std::vector<int> val(parabolXSort.size(), y_min);
-        drawPointDebug(image, sortedPointAtX, sortedPointAtY, Qt::green, image.width()*pointSize);
-//        //!@brief test erase an element in the vector
-//        parabolXSort.erase(parabolXSort.begin()+4);
-//        sortedPointAtY.erase(sortedPointAtY.begin()+4);
-//        sortedPointAtX.erase(sortedPointAtX.begin()+4);
-//        //! end test
+        drawPointDebug(image, extractedPoints, Qt::green, image.width()*pointSize);
+        //!@brief test erase an element in the vector
+        //! end test
         showImage(image);
-
-        missingIndexes = getMissingIndex(parabolXSort, blockWidthPx);
-
-        for (int i = 0; i < parabolXSort.size(); i++) {
-            sortedPointAtX[i] = ((parabolXSort[i]-x_minl)*timeExtract*60)/blockWidthPx;
-            sortedPointAtY[i] = (gridHeight - (sortedPointAtY[i] - y_min))*levelExtract/blockHeightPx;
+        for (const cv::Point2d& p: extractedPoints) {
+            reportedPointAtX.push_back((int(p.x-x_minl)*timeExtract*60)/blockWidthPx);
+            reportedPointAtY.push_back((gridHeight - (p.y - y_min))*levelExtract/blockHeightPx);
         }
-
     }
 
     QTime rptime;
@@ -684,11 +625,10 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
     ui->dataView->clearContents();
     ui->dataView->setRowCount(0);
     if(chartType != 2){
-
-        for (int i = 0; i < sortedPointAtX.size(); i++) {
-            rptime = startTime.addSecs(sortedPointAtX[i]);
+        for (int i = 0; i < reportedPointAtX.size(); i++) {
+            rptime = startTime.addSecs(reportedPointAtX[i]);
             QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
-            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(sortedPointAtY[i]+startLevel, 'f', decimalDigit)));
+            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(reportedPointAtY[i]+startLevel, 'f', decimalDigit)));
             ui->dataView->insertRow(ui->dataView->rowCount());
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
@@ -701,19 +641,16 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         int overflow;
 
         prow = 1;
-        for (int i = 1; i < sortedPointAtX.size(); i++) {
-            rptime = startTime.addSecs(sortedPointAtX[i]);
-            currPoint = sortedPointAtY[i];
-            prevPoint = sortedPointAtY[i - 1];
+        for (int i = 1; i < reportedPointAtX.size(); i++) {
+            rptime = startTime.addSecs(reportedPointAtX[i]);
+            currPoint = reportedPointAtY[i];
+            prevPoint = reportedPointAtY[i - 1];
             diff = currPoint - prevPoint;
             //! convert back to img coordinates to detect
-            overflow = detectRainOver((sortedPointAtX[i-1]*blockWidthPx/(timeExtract*60))+x_minl,
+            overflow = detectRainOver((reportedPointAtX[i-1]*blockWidthPx/(timeExtract*60))+x_minl,
                                        y_min,
                                        blockWidthPx,
                                        blockHeightPx*15);
-//            if(overflow>0){
-//                qDebug()<<"Overflow at "<<rptime.toString("HH:mm")<<"is"<<overflow<<"\n";
-//            }
             diff = diff + overflow;
             diff = qMax(diff, 0);
             QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
@@ -724,17 +661,15 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         }
     }
     //! insert missing index
-    for(int i:missingIndexes){
-        ui->dataView->insertRow(i-prow);
-        QTableWidgetItem *itembf = ui->dataView->item(i-1-prow, 0);
-        QTime t = QTime::fromString(itembf->text(), "hh:mm");
+//    for(int i:missingIndexes){
+//        ui->dataView->insertRow(i-prow);
+//        QTableWidgetItem *itembf = ui->dataView->item(i-1-prow, 0);
+//        QTime t = QTime::fromString(itembf->text(), "hh:mm");
 
-        t = t.addSecs(timeExtract*60);
-        QTableWidgetItem *newitem = new QTableWidgetItem(t.toString("hh:mm"));
-        ui->dataView->setItem(i-prow, 0, newitem);
-
-
-    }
+//        t = t.addSecs(timeExtract*60);
+//        QTableWidgetItem *newitem = new QTableWidgetItem(t.toString("hh:mm"));
+//        ui->dataView->setItem(i-prow, 0, newitem);
+//    }
 }
 
 
@@ -1092,7 +1027,7 @@ void MainWindow::itemClicked(QListWidgetItem *item){
             bPara = 0;
         }
 
-        if(!keepStartEnd){
+        if(keepStartEnd == false){
             x_mincut = 0;
             x_maxcut = 0;
         }
@@ -1167,6 +1102,23 @@ void MainWindow::rotateClick(bool forward){
     showImage(image);
 }
 
+//! @abstract test Function from Rain reader
+//!
+void MainWindow::test_rain_reader(){
+    cv::Rect aoi;
+    cv::Mat imageCV = cvert::QImageToCvMat(image);
+    qDebug()<<"Converted successfully\n";
+    Processing proc;
+    proc.setImage(imageCV);
+    aoi = proc.getAoiRect();
+    std::string result = proc.entireProcess(60, "00:00:00", 24, new int[4] {160, 150, 110, 126});
+    qDebug()<<"get aoi\n"<<aoi.size().width;
+    cv::Mat segmented = proc.getBinary(0);
+    qDebug()<<"Segment size"<<segmented.cols<<"\n";
+    QImage imageSeg = cvert::cvMatToQImage(segmented);
+    qDebug()<<"Converted back\n";
+    showImage(imageSeg);
 
+}
 
 
