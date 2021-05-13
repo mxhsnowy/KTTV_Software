@@ -102,8 +102,9 @@ template<typename T> int last(const std::vector<T> &input, int n, int x)
     return result;
 }
 
-void drawALine(QImage& image, int x, const QColor& color, int penWidth){
-    QPainter painter(&image);
+QImage drawALine(const QImage& image, int x, const QColor& color, int penWidth){
+    QImage outputImg = image.copy();
+    QPainter painter(&outputImg);
     QPen pen;
     pen.setWidth(penWidth);
     pen.setCapStyle(Qt::RoundCap);
@@ -111,10 +112,12 @@ void drawALine(QImage& image, int x, const QColor& color, int penWidth){
     painter.setPen(pen);
     painter.drawLine(x, 0, x, image.height());
     painter.end();
+    return outputImg;
 }
-template <typename T1, typename T2> void drawPointDebug(QImage& image, const std::vector<T1>& xP, const std::vector<T2>& yP,
+template <typename T1, typename T2> QImage drawPointDebug(const QImage& image, const std::vector<T1>& xP, const std::vector<T2>& yP,
                                                           const QColor &color, int penWidth = 10){
-    QPainter painter(&image);
+    QImage outputImg = image.copy();
+    QPainter painter(&outputImg);
     QPen pen;
     pen.setWidth(penWidth);
     pen.setCapStyle(Qt::RoundCap);
@@ -125,10 +128,11 @@ template <typename T1, typename T2> void drawPointDebug(QImage& image, const std
 
     }
     painter.end();
-
+    return outputImg;
 }
-void drawPointDebug(QImage& image, const std::vector<cv::Point2d>& points, const QColor &color, int penWidth = 10){
-    QPainter painter(&image);
+QImage drawPointDebug(const QImage& image, const std::vector<cv::Point2d>& points, const QColor &color, int penWidth = 10){
+    QImage outputImg = image.copy();
+    QPainter painter(&outputImg);
     QPen pen;
     pen.setWidth(penWidth);
     pen.setCapStyle(Qt::RoundCap);
@@ -138,7 +142,7 @@ void drawPointDebug(QImage& image, const std::vector<cv::Point2d>& points, const
         painter.drawPoint(p.x, p.y);
     }
     painter.end();
-
+    return outputImg;
 }
 template <typename T1, typename T2> QImage drawRectDebug(QImage image, std::vector<T1> xP, std::vector<T2> yP,
                                                           const QColor &color, double height, int penWidth = 20){
@@ -192,17 +196,5 @@ template<typename T> std::vector<int> getMissingIndex(std::vector<T> inputTimeVe
     return indexes;
 }
 
-template<class InputIterator, class Function>
-  Function for_each_until(InputIterator first, InputIterator last, Function fn)
-{
-  while (first!=last) {
-    if(fn(first)){
-        break;
-    }
-//    fn (*first);
-    ++first;
 
-  }
-  return fn;      // or, since C++11: return move(fn);
-}
 #endif // SOMEFUNTIONS_H

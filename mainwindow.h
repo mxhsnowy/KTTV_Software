@@ -93,7 +93,7 @@ public slots:
     void changeTable();
 
 
-    void test_rain_reader();
+
     void addToMask(const QVector<QPoint>& pointsVec);
     void createMask(bool);
 

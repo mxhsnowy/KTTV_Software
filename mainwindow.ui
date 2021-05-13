@@ -669,11 +669,6 @@
     <string>Vẽ đường đặc tính để phần mềm nhận biết</string>
    </property>
   </action>
-  <action name="actionTestRR">
-   <property name="text">
-    <string>TestRR</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

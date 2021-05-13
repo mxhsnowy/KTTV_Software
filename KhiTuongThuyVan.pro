@@ -16,16 +16,8 @@ RC_ICONS = KttvIconCrop.ico
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Rain-Reader/src/AverageWalker.cpp \
-    Rain-Reader/src/Converter.cpp \
-    Rain-Reader/src/CurveExtractor.cpp \
-    Rain-Reader/src/Data.cpp \
-    Rain-Reader/src/EdgeWalker.cpp \
-    Rain-Reader/src/PointList.cpp \
-    Rain-Reader/src/Postprocessor.cpp \
-    Rain-Reader/src/Processing.cpp \
-    Rain-Reader/src/RegionGrowingThresholder.cpp \
-    Rain-Reader/src/SimpleHistogram.cpp \
+    extractandreport.cpp \
+    graphicsitems.cpp \
     input.cpp \
     linedetection.cpp \
     main.cpp \
@@ -34,17 +26,9 @@ SOURCES += \
     mygraphicsview.cpp
 
 HEADERS += \
-    Rain-Reader/src/AverageWalker.h \
-    Rain-Reader/src/Converter.h \
-    Rain-Reader/src/CurveExtractor.h \
-    Rain-Reader/src/Data.h \
-    Rain-Reader/src/EdgeWalker.h \
-    Rain-Reader/src/PointList.h \
-    Rain-Reader/src/Postprocessor.h \
-    Rain-Reader/src/Processing.h \
-    Rain-Reader/src/RegionGrowingThresholder.h \
-    Rain-Reader/src/SimpleHistogram.h \
     convert.h \
+    extractandreport.h \
+    graphicsitems.h \
     input.h \
     linedetection.h \
     mainwindow.h \

@@ -3,7 +3,6 @@
 #include "convert.h"
 #include "somefuntions.h"
 #include <numeric>
-#include "Rain-Reader/src/Processing.h"
 #include <QList>
 /**
  * @brief MainWindow::MainWindow
@@ -100,6 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
             [&](int index){ NameToID(index); });
     connect(ui->stationID, QOverload<int>::of(&QComboBox::currentIndexChanged),
                     [&](int index){ IDToName(index); });
+
     connect(ui->actionRotate, &QAction::triggered, [&](){rotateClick(true);});
     connect(ui->actionRotateBack, &QAction::triggered, [&](){rotateClick(false);});
 
@@ -109,7 +109,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Mask, &MyGraphicsView::passRectPoint, this, &MainWindow::addingRectPoint);
     connect(ui->Mask, &MyGraphicsView::passLimitPoint, this, &MainWindow::changeStartEndPoint);
     connect(ui->Mask, &MyGraphicsView::passDrewPoints, this, &MainWindow::addToMask);
-    connect(ui->actionTestRR, &QAction::triggered, this, &MainWindow::test_rain_reader);
     switchMode(0);
     opened = 0;
 
@@ -289,43 +288,6 @@ void MainWindow::receivePoint(QPointF point){
 }
 void MainWindow::addingRpPoint(QPointF point){
 
-//    int xLineWidth = qAbs(x_max - x_min);
-//    int blockWidthPx = xLineWidth/numCols;
-//    int blockHeightPx = gridHeight/numRows;
-//    int rpPointX;
-//    int rpPointY;
-//    if(chartType == 4|| chartType == 2){
-//        rpPointX = (point.x()-x_min)*timeExtract*60/blockWidthPx;
-//        rpPointY = (gridHeight - (point.y()-y_min))*levelExtract/blockHeightPx;
-//    }
-//    else{
-//        int c = point.x()-aPara*qPow(point.y(), 2)-bPara*point.y();
-//        int xPara = aPara*qPow(y_min, 2)+bPara*y_min+c;
-//        rpPointX = ((xPara-x_min)*timeExtract*60)/blockWidthPx;
-//        rpPointY = (gridHeight - (point.y() - y_min))*levelExtract/blockHeightPx;
-//    }
-
-//    QTime rpTime;
-//    if(chartType!=2){
-//        rpTime = startTime.addSecs(rpPointX);
-//        rpTime = rpTime.addSecs(timeUD*60);
-//        QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rpTime.toString("HH:mm")));
-//        QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(rpPointY+startLevel+valUD)));
-//        ui->dataView->insertRow(ui->dataView->rowCount());
-//        ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
-//        ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
-//    }
-//    else {
-//        rpTime = startTime.addSecs(rpPointX);
-//        rpTime = rpTime.addSecs(timeUD*60);
-//        QTableWidgetItem *itembf = ui->dataView->item(ui->dataView->rowCount() - 1, 1);
-//        int levelDiff = rpPointY - itembf->text().toInt();
-//        QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rpTime.toString("HH:mm")));
-//        QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(levelDiff)));
-//        ui->dataView->insertRow(ui->dataView->rowCount());
-//        ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
-//        ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
-//    }
 }
 
 
@@ -333,12 +295,14 @@ int MainWindow::timeToCols(QTime start_time, double timeExtractinMin, QTime end_
     int diff = start_time.secsTo(end_time) + 86400*days;
     int numcols = diff/(timeExtractinMin*60);
     return numcols;
+//    return diff;
 }
 
 int MainWindow::levelToRows(int startLevel, double levelExtract, int endLevel){
     double diff = endLevel - startLevel;
     int numrows = diff/levelExtract;
     return numrows;
+//    return diff;
 }
 
 void MainWindow::changeParams(QTime start_time, int time_extract, QTime end_time,
@@ -507,11 +471,12 @@ std::vector<cv::Point> findLineinQImage(const QImage& inputImg){
     cv::findNonZero(maskcv, locations);
     return locations;
 }
+
 void MainWindow::extractDataFromLine(const QImage& inputMask){
 
     locations = findLineinQImage(inputMask);
-
-    int x_minl, y_minl, x_maxl;
+    QImage resultImg;
+    int x_minl, y_minl, x_maxl, y_maxl;
     int prow = 0;
     std::vector<cv::Point>::iterator itm;
     if (getNewStartEnd){
@@ -526,6 +491,7 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
             x_minl = mmx.first->x;
             y_minl = mmx.first->y;
             x_maxl = mmx.second->x;
+            y_maxl = mmx.second->y;
         }
         else{
             // Set that point as the beginning
@@ -535,6 +501,7 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
             itm = std::find_if(locations.begin(), locations.end(), [&x_max](const cv::Point& p){return p.x==x_max;});
             index = itm - locations.begin();
             x_maxl = locations[index].x;
+            y_maxl = locations[index].y;
         }
     }
 
@@ -543,19 +510,19 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         x_minl = mmx.first->x;
         y_minl = mmx.first->y;
         x_maxl = mmx.second->x;
+        y_maxl = mmx.second->y;
     }
-    drawALine(image, x_minl, Qt::magenta, 10);
-    drawALine(image, x_maxl, Qt::magenta, 10);
+    // Draw lines to image
+    resultImg = drawALine(image, x_minl, Qt::magenta, 10);
+    resultImg = drawALine(resultImg, x_maxl, Qt::magenta, 10);
+
+
     int xLineWidth = qAbs(x_maxl - x_minl);
     double blockWidthPx = double(xLineWidth)/numCols;
-
     double blockHeightPx = double(gridHeight)/numRows;
-    qDebug()<<xLineWidth<<numCols<<"\n";
-    qDebug()<<"Block width:"<<blockWidthPx<<"\n";
-    qDebug()<<gridHeight<<numRows<<"\n";
-    qDebug()<<"Block height:"<<blockHeightPx<<"\n";
     std::vector<int> reportedPointAtX;
     std::vector<int> reportedPointAtY;
+
     int j = 0;
     double value = 0;
     std::vector<int>::iterator it;
@@ -563,77 +530,112 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
     std::vector<int> missingIndexes;
     std::vector<cv::Point2d> extractedPoints;
     //! Cartesian axis
+    //! Water and rain perpendicular axes
     if(chartType == 4 || chartType == 2){
 
         while(value<=x_maxl){
             value = x_minl + blockWidthPx * j;
-            itm = std::find_if(locations.begin(), locations.end(), [&value](const cv::Point2d& p){return p.x==int(value);});
+            itm = std::find_if(locations.begin(), locations.end(), [&value](const cv::Point2d& p){return p.x==qRound(value);});
             extractedPoints.push_back(*itm);
             j++;
         }
-        drawPointDebug(image, extractedPoints, Qt::green, image.width()*pointSize);
-        showImage(image);
-        //!@brief test erase an element in the vector
-//        reportedPointAtY.erase(reportedPointAtY.begin()+4);
-//        reportedPointAtX.erase(reportedPointAtX.begin()+4);
-        //!end test
+        //! Remove redundant points
+//        cout<<"Before:"<<extractedPoints<<"\n";
+//        int diff;
+//        for (int i = 1; i<extractedPoints.size(); i++) {
+//            diff = extractedPoints[i].x - extractedPoints[i-1].x;
+//            if(qAbs(diff-blockWidthPx) < 10){
+//                extractedPoints.erase(extractedPoints.begin()+i);
+//            }
 
-//        missingIndexes = getMissingIndex(reportedPointAtX, blockWidthPx);
-//        qDebug()<<"Missing index is"<<missingIndexes<<"\n";
-        for (const cv::Point2d& p: extractedPoints) {
-            reportedPointAtX.push_back(((int(p.x-x_minl))*timeExtract*60)/blockWidthPx);
-            reportedPointAtY.push_back((gridHeight - (p.y - y_min))*levelExtract/blockHeightPx);
-        }
+//        }
+//        cout<<"After:"<<extractedPoints<<"\n";
+
     }
+    //! Parabola axis
+    //! Moisture, Pressure and Temparature are not perpendicular axes
     else{
-        //! Parabola axis
+
         std::vector<int> parabolyzedX;
         double c;
         //! @a converting from vertical to parabol points
-        cout<<"Locations before"<<locations<<"\n";
+
         for(const cv::Point& p: locations){
             c = p.x-aPara*qPow(p.y, 2)-bPara*p.y;
-            parabolyzedX.push_back(aPara*qPow(y_min, 2)+bPara*y_min+c);
+            parabolyzedX.push_back(qRound(aPara*qPow(y_min, 2)+bPara*y_min+c));
         }
-        cout<<"Locations after"<<locations<<"\n";
+
         c = x_minl-aPara*qPow(y_minl, 2)-bPara*y_minl;
         double c_minl = aPara*qPow(y_min, 2)+bPara*y_min+c;
+        c = x_maxl-aPara*qPow(y_maxl, 2)-bPara*y_maxl;
+        double c_maxl = aPara*qPow(y_max, 2)+bPara*y_max+c;
         std::vector<int> indexes;
         std::vector<int>::iterator it;
-        while(value<=x_maxl){
+        while(value<=c_maxl){
             value = c_minl + blockWidthPx * j;
             it = std::find(parabolyzedX.begin(), parabolyzedX.end(), qRound(value));
             indexes.push_back(it-parabolyzedX.begin());
             j++;
         }
+        qDebug()<<"Num points "<<j<<"\n";
         for(const int& i: indexes){
             extractedPoints.push_back(locations[i]);
         }
+        qDebug()<<"Time block width in px"<<blockWidthPx<<"\n";
+//        cout<<"Before:"<<extractedPoints<<"\n";
+//        int diff;
+//        for (int i = 1; i<extractedPoints.size(); i++) {
+//            diff = extractedPoints[i].x - extractedPoints[i-1].x;
+//            if(qAbs(diff-blockWidthPx) < 10){
+//                extractedPoints.erase(extractedPoints.begin()+i-1);
+//            }
 
-        drawPointDebug(image, extractedPoints, Qt::green, image.width()*pointSize);
-        //!@brief test erase an element in the vector
-        //! end test
-        showImage(image);
-        for (const cv::Point2d& p: extractedPoints) {
-            reportedPointAtX.push_back((int(p.x-x_minl)*timeExtract*60)/blockWidthPx);
-            reportedPointAtY.push_back((gridHeight - (p.y - y_min))*levelExtract/blockHeightPx);
-        }
+//        }
+//        cout<<"After:"<<extractedPoints<<"\n";
+//        resultImg = drawPointDebug(resultImg, extractedPoints, Qt::green, image.width()*pointSize);
+//        showImage(resultImg);
+//        for (cv::Point2d& p: extractedPoints) {
+//            p.x = (int(p.x-x_minl)*timeExtract*60)/blockWidthPx;
+//            p.y = (gridHeight - (p.y - y_min))*levelExtract/blockHeightPx;
+//        }
     }
 
-    QTime rptime;
+    resultImg = drawPointDebug(resultImg, extractedPoints, Qt::green, image.width()*pointSize);
+    showImage(resultImg);
+
+    //!@brief test erase an element in the vector
+    //reportedPointAtY.erase(reportedPointAtY.begin()+4);
+    //reportedPointAtX.erase(reportedPointAtX.begin()+4);
+    //!Find missing points
+    //missingIndexes = getMissingIndex(reportedPointAtX, blockWidthPx);
+    //qDebug()<<"Missing index is"<<missingIndexes<<"\n";
+    //!end test
+
+    for (cv::Point2d& p: extractedPoints) {
+        p.x = (int(p.x-x_minl)*timeExtract*60)/blockWidthPx;
+        p.y = (gridHeight - (p.y - y_min))*levelExtract/blockHeightPx;
+    }
+
+    QTime rpTime;
+    //! Sorting according to timeline
+    std::sort(extractedPoints.begin(), extractedPoints.end(), [&](const cv::Point2d& p1, const cv::Point2d& p2){return p1.x<p2.x;});
+
     //! Writing those data to the table
     ui->dataView->clearContents();
     ui->dataView->setRowCount(0);
+    //! Rain: report difference between two consecutive time
     if(chartType != 2){
-        for (int i = 0; i < reportedPointAtX.size(); i++) {
-            rptime = startTime.addSecs(reportedPointAtX[i]);
-            QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
-            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(reportedPointAtY[i]+startLevel, 'f', decimalDigit)));
+        for (int i = 0; i < extractedPoints.size(); i++) {
+//            rpTime = startTime.addSecs(extractedPoints[i].x);
+            rpTime = startTime.addSecs(timeExtract*60*i);
+            QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rpTime.toString("HH:mm")));
+            QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(extractedPoints[i].y+startLevel, 'f', decimalDigit)));
             ui->dataView->insertRow(ui->dataView->rowCount());
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 1, item2);
         }
     }
+    //! Others: report time point
     else {
         int prevPoint;
         int currPoint;
@@ -641,19 +643,21 @@ void MainWindow::extractDataFromLine(const QImage& inputMask){
         int overflow;
 
         prow = 1;
-        for (int i = 1; i < reportedPointAtX.size(); i++) {
-            rptime = startTime.addSecs(reportedPointAtX[i]);
-            currPoint = reportedPointAtY[i];
-            prevPoint = reportedPointAtY[i - 1];
+        for (int i = 1; i < extractedPoints.size(); i++) {
+            //rpTime = startTime.addSecs(reportedPointAtX[i]);
+            rpTime = startTime.addSecs(timeExtract*60*i);
+            currPoint = extractedPoints[i].y;
+            prevPoint = extractedPoints[i - 1].y;
             diff = currPoint - prevPoint;
-            //! convert back to img coordinates to detect
-            overflow = detectRainOver((reportedPointAtX[i-1]*blockWidthPx/(timeExtract*60))+x_minl,
+            //!convert back to img coordinates to detect overflow lines between hours
+            overflow = detectRainOver((extractedPoints[i-1].x*blockWidthPx/(timeExtract*60))+x_minl,
                                        y_min,
                                        blockWidthPx,
                                        blockHeightPx*15);
             diff = diff + overflow;
             diff = qMax(diff, 0);
-            QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rptime.toString("HH:mm")));
+            diff = diff==1?0:diff;
+            QTableWidgetItem *item = new QTableWidgetItem(QString("%1").arg(rpTime.toString("HH:mm")));
             QTableWidgetItem *item2 = new QTableWidgetItem(QString("%1").arg(QString::number(diff)));
             ui->dataView->insertRow(ui->dataView->rowCount());
             ui->dataView->setItem(ui->dataView->rowCount() - 1, 0, item);
@@ -767,14 +771,8 @@ void MainWindow::moveDay(bool isNext){
     }
     mask.load(maskPath);
     if(!mask.isNull()){
-        qDebug()<<"Mask size before "<<mask.size()<<"\n";
-//        int n_rot = totalAngle/angle;
-//        for (int i = 0;i<n_rot ; i++) {
         mask = rotating(mask, totalAngle);
-//        }
-        qDebug()<<"Mask size after "<<mask.size()<<"\n";
         if(autoCropped){
-
             mask = cropping(mask, x_minc, y_min, x_maxc-x_minc, y_max-y_min, false);
         }
         QImage maskDilate = performDilation(mask);
@@ -1104,21 +1102,6 @@ void MainWindow::rotateClick(bool forward){
 
 //! @abstract test Function from Rain reader
 //!
-void MainWindow::test_rain_reader(){
-    cv::Rect aoi;
-    cv::Mat imageCV = cvert::QImageToCvMat(image);
-    qDebug()<<"Converted successfully\n";
-    Processing proc;
-    proc.setImage(imageCV);
-    aoi = proc.getAoiRect();
-    std::string result = proc.entireProcess(60, "00:00:00", 24, new int[4] {160, 150, 110, 126});
-    qDebug()<<"get aoi\n"<<aoi.size().width;
-    cv::Mat segmented = proc.getBinary(0);
-    qDebug()<<"Segment size"<<segmented.cols<<"\n";
-    QImage imageSeg = cvert::cvMatToQImage(segmented);
-    qDebug()<<"Converted back\n";
-    showImage(imageSeg);
 
-}
 
 
